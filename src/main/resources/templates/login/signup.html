@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 가입</title>
+</head>
+<body>
+<h1>회원가입</h1>
+<form action="signup.html" th:action="@{/login/signup}"  th:object="${user}" method="post">
+    <div>
+        <label for="username">사용자 이름</label>
+        <input type="text" id="username" th:field="*{username}"
+               th:errorclass="field-error"
+               placeholder="닉네임을 입력하세요">
+        <div class="field-error" th:errors="*{username}">사용자 이름 오류</div>
+    </div>
+    <div>
+        <label for="telephone">사용자 전화번호</label>
+        <input type="tel" id="telephone" th:field="*{telephone}"
+               th:errorclass="field-error"
+               placeholder="전화번호를 입력하세요">
+        <div class="field-error" th:errors="*{telephone}">전화번호 오류</div>
+    </div>
+    <div>
+        <label for="email">사용자 이메일</label>
+        <input type="text" id="email" th:field="*{email}"
+               th:errorclass="field-error"
+               placeholder="이메일을 입력하세요">
+        <div class="field-error" th:errors="*{email}">이메일 오류</div>
+    </div>
+    <div>
+        <label for="userId">사용자 Id</label>
+        <input type="text" id="userId" th:field="*{userId}"
+               th:errorclass="field-error"
+               placeholder="Id를 입력하세요">
+        <div class="field-error" th:errors="*{userId}">사용자 Id 오류</div>
+    </div>
+    <div>
+        <label for="password">사용자 비밀번호</label>
+        <input type="password" id="password" th:field="*{password}"
+               th:errorclass="field-error"
+               placeholder="비밀번호를 입력하세요">
+        <div class="field-error" th:errors="*{password}">사용자 비밀번호 오류</div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button class="button" type="submit">회원 가입</button>
+        </div>
+        <div class="col">
+            <button class="cancel"
+                    onclick="location.href='items.html'"
+                    th:onclick="|location.href='@{/home.html}'|"
+                    type="button">취소</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>
