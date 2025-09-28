@@ -1,16 +1,25 @@
 package com.limhs.movie_project.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
-@Data
+@Getter
+@Setter
+@Entity
 public class User {
     public User() {
     }
+
     public User(User user){
         this.username = user.getUsername();
         this.telephone = user.getTelephone();
@@ -18,6 +27,8 @@ public class User {
         this.userId = user.getUserId();
         this.password = user.getPassword();
     }
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank(message = "사용자 이름값은 필수입니다.")
     private String username;
