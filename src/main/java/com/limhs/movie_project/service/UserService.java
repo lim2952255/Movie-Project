@@ -1,7 +1,9 @@
 package com.limhs.movie_project.service;
 
+import com.limhs.movie_project.domain.LoginDTO;
 import com.limhs.movie_project.domain.User;
 import com.limhs.movie_project.exception.DuplicatedUserId;
+import com.limhs.movie_project.exception.LoginFailException;
 import com.limhs.movie_project.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,24 @@ public class UserService {
         if(findUser.isPresent()){
             throw new DuplicatedUserId("사용자 id가 중복됩니다. 다른 id로 시도해주세요");
         }
+
         repository.save(user);
         return user;
+    }
+
+    public User login(LoginDTO loginDTO) throws LoginFailException {
+        Optional<User> findUser = repository.findByUserId(loginDTO.getUserId());
+
+        if(findUser.isEmpty()){
+            throw new LoginFailException("아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
+
+        boolean matches = passwordEncoder.matches(loginDTO.getPassword(), findUser.get().getPassword());
+
+        if(!matches){
+            throw new LoginFailException("아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
+
+        return findUser.get();
     }
 }

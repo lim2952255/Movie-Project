@@ -1,20 +1,23 @@
 package com.limhs.movie_project.controller;
 
+import com.limhs.movie_project.domain.LoginDTO;
 import com.limhs.movie_project.domain.User;
 import com.limhs.movie_project.exception.DuplicatedUserId;
+import com.limhs.movie_project.exception.LoginFailException;
 import com.limhs.movie_project.repository.UserRepository;
 import com.limhs.movie_project.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -50,7 +53,46 @@ public class LoginController {
 
         log.info("save success");
 
-        //redirect.addAttribute("userId", user.getUserId());
+        return "redirect:/home";
+    }
+
+    @GetMapping("/login")
+    public String login(Model model){
+        model.addAttribute("loginDTO",new LoginDTO());
+        return "login/login";
+    }
+
+    @PostMapping("/login")
+    public String loginForm(@Validated @ModelAttribute LoginDTO loginDTO, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirect, Model model){
+        if(bindingResult.hasErrors()){
+            log.info("errors={}",bindingResult);
+            return "login/login";
+        }
+        User user;
+
+        try {
+            // 로그인 검증
+            user = userService.login(loginDTO);
+        } catch(LoginFailException e){
+            // 로그인 실패 로직
+            bindingResult.addError(new ObjectError("loginDTO", e.getMessage()));
+            log.info("errors={}",bindingResult);
+            return "login/login";
+        }
+
+        // 로그인 성공 로직
+        HttpSession session = request.getSession();
+        session.setAttribute("user", user);
+
+
+        return "redirect:/home";
+    }
+
+    @GetMapping("logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession(false);
+        session.invalidate();
+
         return "redirect:/home";
     }
 }

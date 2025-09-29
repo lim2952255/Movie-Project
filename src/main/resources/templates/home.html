@@ -2,13 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>home</title>
 </head>
 <body>
 <h1>로그인/회원가입 링크</h1>
-<ul>
-    <li><a href="/login/signup">회원가입</a></li>
-    <li><a href="/login/login">로그인</a></li>
-</ul>
+<div th:if="${user != null}">
+    <p th:text="|${user.userId}님 환영합니다!|" >사용자 이름</p>
+    <ul>
+        <li><a href="/login/logout">로그아웃</a></li>
+    </ul>
+</div>
+<div th:if="${user == null}">
+    <ul>
+        <li><a href="/login/signup">회원가입</a></li>
+        <li><a href="/login/login">로그인</a></li>
+    </ul>
+</div>
+<div>
+    <ul>
+        <li><a href="/movie/list">영화 목록</a></li>
+    </ul>
+</div>
 </body>
 </html>
