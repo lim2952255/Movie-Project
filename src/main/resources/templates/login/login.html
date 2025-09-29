@@ -11,7 +11,9 @@
 </div>
 <h1>로그인</h1>
 <form action="login.html" th:action="@{/login/login}"  th:object="${loginDTO}" method="post">
-    <input type="hidden" name="redirectURL" th:value="${redirectURL}">
+    <div th:if="${redirectURL != null}">
+        <input type="hidden" name="redirectURL" th:value="${redirectURL}">
+    </div>
 
     <div th:if="${#fields.hasGlobalErrors()}">
         <p class="global-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메세지</p>
