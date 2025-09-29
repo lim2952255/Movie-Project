@@ -20,6 +20,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Arrays;
+import java.util.Enumeration;
+
 @Controller
 @RequestMapping("/login/")
 @RequiredArgsConstructor
@@ -57,8 +60,15 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public String login(Model model){
+    public String login(@RequestParam(value="redirectURL", required = false) String redirectURL,
+                        @RequestParam(value="message", required = false) String message,
+                        Model model){
+        //request.getAttribute("")
         model.addAttribute("loginDTO",new LoginDTO());
+        model.addAttribute("redirectURL", redirectURL);
+        if(message != null){
+            model.addAttribute("message","해당 서비스는 로그인이 필요한 서비스입니다.");
+        }
         return "login/login";
     }
 
@@ -84,8 +94,12 @@ public class LoginController {
         HttpSession session = request.getSession();
         session.setAttribute("user", user);
 
+        String redirectURL = request.getParameter("redirectURL");
 
-        return "redirect:/home";
+        if(redirectURL != null){
+            return "redirect:"+redirectURL;
+        }
+        return "redirect:/";
     }
 
     @GetMapping("logout")

@@ -5,8 +5,14 @@
     <title>로그인</title>
 </head>
 <body>
+
+<div th:if="${message != null}">
+    <p th:text="${message}" >로그인 접근제어</p>
+</div>
 <h1>로그인</h1>
 <form action="login.html" th:action="@{/login/login}"  th:object="${loginDTO}" method="post">
+    <input type="hidden" name="redirectURL" th:value="${redirectURL}">
+
     <div th:if="${#fields.hasGlobalErrors()}">
         <p class="global-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메세지</p>
     </div>
