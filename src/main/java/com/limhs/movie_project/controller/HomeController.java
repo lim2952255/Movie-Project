@@ -20,14 +20,7 @@ public class HomeController {
     }
 
     @GetMapping("home")
-    public String home(@SessionAttribute(name = "user", required = false) User user, Model model){
-        log.info("home 컨트롤러 호출");
-
-        if(user != null){
-            model.addAttribute("user",user);
-            log.info("로그인 정보 추가");
-        }
-
+    public String home(Model model){
         return "home";
     }
 }
