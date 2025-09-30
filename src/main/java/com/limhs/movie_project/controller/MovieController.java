@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/movie")
 public class MovieController {
 
-    @GetMapping("/list")
-    public String list(){
-        return "/movie/movielist";
+    @GetMapping("/popularList")
+    public String popularList(){
+        return "/movie/popularList";
+    }
+
+    @GetMapping("/playingList")
+    public String playingList(){
+        return "/movie/playingList";
     }
 }
