@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+<body>
+
+<!-- 영화 데이터 반복 -->
+<div th:fragment = "movieList">
+    <div class = "movie-container">
+        <div th:each="movie : ${movies}">
+            <div class = "movie-card">
+                <img th:src="${movie.posterPath}" alt="포스터 이미지" />
+                <h3 th:text="${movie.title}">영화 제목</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

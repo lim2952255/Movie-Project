@@ -2,6 +2,8 @@ package com.limhs.movie_project.repository;
 
 import com.limhs.movie_project.domain.movie.Movie;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +15,10 @@ import java.util.Optional;
 public interface MovieRepository extends JpaRepository<Movie, Long> {
     Optional<Movie> findByMovieId(int movieId);
 
+    Page<Movie> findByIsPopular(boolean isPopular, Pageable pageable);
+
+    Page<Movie> findByIsPlaying(boolean isPopular, Pageable pageable);
+
     @Modifying
     @Transactional
     @Query("UPDATE Movie m set m.isPopular = false, m.isPlaying = false")
@@ -22,4 +28,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Transactional
     @Query("DELETE FROM Movie m WHERE m.isPopular = false AND m.isPlaying = false")
     void deleteAllUnused();
+
+
 }
