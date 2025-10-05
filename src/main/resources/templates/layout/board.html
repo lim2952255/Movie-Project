@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<div th:fragment="board">
+    <h2>영화 게시판</h2>
+
+    <!-- 게시판 목록 -->
+    <table>
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+            <th>조회수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td><a href="#">테스트</a></td>
+            <td>홍길동</td>
+            <td>2025-00-00</td>
+            <td>12</td>
+        </tr>
+        <tr>
+        </tbody>
+    </table>
+
+    <!-- 글쓰기 버튼 -->
+    <p><a href="/write">글쓰기</a></p>
+</div>
+
+</body>
+</html>

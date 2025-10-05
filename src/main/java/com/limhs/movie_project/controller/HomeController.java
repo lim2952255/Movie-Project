@@ -21,6 +21,11 @@ public class HomeController {
 
     @GetMapping("home")
     public String home(Model model){
-        return "home";
+        return "home/home";
+    }
+
+    @GetMapping("mypage")
+    public String mypage(){
+        return "home/mypage.html";
     }
 }

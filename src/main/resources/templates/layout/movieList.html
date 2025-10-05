@@ -8,10 +8,17 @@
 <div th:fragment = "movieList">
     <div class = "movie-container">
         <div th:each="movie : ${movies}">
-            <div class = "movie-card">
-                <img th:src="${movie.posterPath}" alt="포스터 이미지" />
-                <h3 th:text="${movie.title}">영화 제목</h3>
-            </div>
+            <a th:href="@{/movie/{movieId}(movieId=${movie.movieId})}">
+                <div class = "movie-card">
+                    <img th:src="${movie.posterPath}" alt="포스터 이미지" />
+                    <h2 th:text="${movie.title}">영화 제목</h2>
+                    <div th:if="${movie.adult}"><h3 th:text="성인영화">성인영화</h3></div>
+                    <div style="display: flex; justify-content: center; gap: 10px;">
+                        <div th:if="${movie.isPopular}"><h3 th:text="인기영화">인기영화</h3></div>
+                        <div th:if="${movie.isPlaying}"><h3 th:text="상영중">상영중</h3></div>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 </div>

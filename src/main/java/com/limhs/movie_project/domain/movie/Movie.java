@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,6 +25,9 @@ public class Movie {
 
     private boolean isPopular = false;
 
+    @OneToMany(mappedBy = "movie")
+    private List<MovieGenres> movieGenres = new ArrayList<>();
+
     @JsonProperty("genre_ids")
     private List<Integer> genreIds;
 
@@ -31,8 +35,9 @@ public class Movie {
     private int movieId;
 
     @JsonProperty("overview")
+
     @Column(columnDefinition = "LONGTEXT")
-    private String overView;
+    private String overview;
 
     private Double popularity;
 

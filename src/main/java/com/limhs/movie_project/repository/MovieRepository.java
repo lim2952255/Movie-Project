@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,6 +19,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     Page<Movie> findByIsPopular(boolean isPopular, Pageable pageable);
 
     Page<Movie> findByIsPlaying(boolean isPopular, Pageable pageable);
+
+    Optional<List<Integer>> findGenreIdsByMovieId(int movieId);
 
     @Modifying
     @Transactional
