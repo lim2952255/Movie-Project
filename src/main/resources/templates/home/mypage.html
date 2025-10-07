@@ -3,9 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>mypage</title>
+    <style>
+        /* 영화 카드 컨테이너 */
+        .movie-container {
+            display: flex;
+            flex-wrap: wrap;       /* 화면 끝에서 줄바꿈 */
+            gap: 16px;             /* 카드 사이 간격 */
+            justify-content: center; /* 가운데 정렬 */
+            align-items: stretch;  /* 같은 행의 카드 높이를 자동 맞춤 */
+        }
+
+        /* 각 영화 카드 */
+        .movie-card {
+            width: 200px;
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            overflow: hidden; /* 넘치는 건 숨김 */
+        }
+
+        /* 포스터 이미지 */
+        .movie-card img {
+            width: 100%;
+            border-radius: 4px;
+        }
+
+        /* 제목 */
+        .movie-card h2 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; /* 너무 긴 제목은 ... */
+        }
+    </style>
 </head>
 <body>
 <div th:replace="/layout/header :: header"></div>
-
+<p th:text="|찜한 영화목록|">찜 목록</p>
+<div th:replace="/layout/movieList :: movieList"></div>
 </body>
 </html>

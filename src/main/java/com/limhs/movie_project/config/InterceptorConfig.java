@@ -2,12 +2,16 @@ package com.limhs.movie_project.config;
 
 import com.limhs.movie_project.interceptor.LoginInterceptor;
 import com.limhs.movie_project.interceptor.UserInterceptor;
+import com.limhs.movie_project.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@RequiredArgsConstructor
 public class InterceptorConfig implements WebMvcConfigurer {
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())

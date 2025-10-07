@@ -21,4 +21,18 @@ public class MovieGenres {
     @ManyToOne
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+    public void setMovieGenres(Movie movie, Genre genre){
+        if(this.movie != null && this.movie != movie){
+            this.movie.getMovieGenres().remove(this);
+        }
+
+        this.movie = movie;
+
+        if(this.movie != null && !movie.getMovieGenres().contains(this)){
+            movie.getMovieGenres().add(this);
+        }
+
+        this.genre = genre;
+    }
 }

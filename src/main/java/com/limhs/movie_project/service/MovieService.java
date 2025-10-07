@@ -62,6 +62,11 @@ public class MovieService {
         return movieCards;
     }
 
+    public MovieCardDTO mappingMovieToMovieCard(Movie movie){
+        MovieCardDTO movieCardDTO = new MovieCardDTO(movie, tmdbImageBaseUrl);
+        return movieCardDTO;
+    }
+
     public MovieDetailDTO mappingMovieToMovieDetail(Movie movie){
         MovieDetailDTO movieDetailDTO = new MovieDetailDTO(movie, tmdbImageBaseUrl);
         return movieDetailDTO;

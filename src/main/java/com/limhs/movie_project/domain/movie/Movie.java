@@ -2,6 +2,7 @@ package com.limhs.movie_project.domain.movie;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.limhs.movie_project.domain.Favorite;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -161,16 +161,17 @@ public class MovieSchedule {
     public void mappingGenreWithMovie(Movie movie){
         List<Integer> genreIds = movie.getGenreIds();
         for (Integer genreId : genreIds) {
-            MovieGenres movieGenres = new MovieGenres();
             Optional<Genre> findGenre = genreRepository.findByGenreId(genreId);
             if(findGenre.isEmpty()){
                 throw new RuntimeException("해당 장르를 찾을 수 없습니다");
             }
             Genre genre = findGenre.get();
-            movieGenres.setMovie(movie);
-            movieGenres.setGenre(genre);
-            movie.getMovieGenres().add(movieGenres);
-            movieGenresRepository.save(movieGenres);
+
+            if(movieGenresRepository.findByMovieAndGenre(movie,genre).isEmpty()){ //중복 방지
+                MovieGenres movieGenres = new MovieGenres();
+                movieGenres.setMovieGenres(movie,genre);
+                movieGenresRepository.save(movieGenres);
+            }
         }
     }
 }

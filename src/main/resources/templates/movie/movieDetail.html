@@ -28,6 +28,27 @@
             width: 100%;
             border-radius: 4px;
         }
+
+        /* 찜하기 버튼 스타일 */
+        .favorite-button {
+            margin-top: 12px;
+            padding: 8px 16px;
+            background-color: #ff4d4f;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+        }
+
+        .favorite-button:hover {
+            background-color: #e63946;
+        }
+
+        .favorite-button:active {
+            background-color: #c62828;
+        }
     </style>
 </head>
 <body>
@@ -50,7 +71,18 @@
         <div th:each="genre : ${movie.genres}">
             <p>장르 : <span th:text="${genre.genreName}"></span></p>
         </div>
-        <div th:text="|영화 찜하기|">찜하기</div>
+        <div th:if="${isFavorite}">
+            <!-- 이미 찜한 영화일 경우, 찜 취소 버튼 -->
+            <form th:action="@{/user/{movieId}/unfavorite(movieId=${movie.movieId})}" method="post">
+                <button type="submit" class="favorite-button">찜 취소하기</button>
+            </form>
+        </div>
+        <div th:if="${!isFavorite}">
+            <!-- 찜하지 않은 영화일 경우, 찜하기 버튼 -->
+            <form th:action="@{/user/{movieId}/favorite(movieId=${movie.movieId})}" method="post">
+                <button type="submit" class="favorite-button">영화 찜하기</button>
+            </form>
+        </div>
     </div>
 </div>
 <div th:if="${movie.isPlaying}">
