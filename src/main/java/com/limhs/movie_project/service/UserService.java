@@ -16,6 +16,9 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +35,9 @@ public class UserService {
     private final FavoriteRepository favoriteRepository;
     private final MovieService movieService;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${tmdb.image.base.url}")
+    private String tmdbImageBaseUrl;
 
     public User save(User user) throws DuplicatedUserId {
         String password = user.getPassword();
@@ -62,94 +68,5 @@ public class UserService {
         }
 
         return findUser.get();
-    }
-
-    @Transactional
-    public void setFavorites(int movieId, HttpServletRequest request, HttpServletResponse response){
-        Optional<Movie> findMovie = movieRepository.findByMovieId(movieId);
-        if(findMovie.isEmpty()){
-            throw new RuntimeException("해당 영화가 존재하지 않습니다.");
-        }
-        Movie movie = findMovie.get();
-
-        HttpSession session = request.getSession(false);
-
-        if(session != null){
-            Object findUser = session.getAttribute("user");
-            if(findUser != null){
-                User getUser = (User) findUser;
-                Optional<User> user = userRepository.findByUserId(getUser.getUserId());
-
-                Optional<Favorite> existFavorite = favoriteRepository.findByUserAndMovie(user.get(), movie); // 중복 체크
-                if(existFavorite.isPresent()){
-                    return;
-                }
-
-                Favorite favorite = new Favorite();
-                favorite.setFavorite(movie, user.get());
-                favoriteRepository.save(favorite);
-            }
-        }
-    }
-
-        @Transactional
-        public void unsetFavorites(int movieId, HttpServletRequest request, HttpServletResponse response){
-            Optional<Movie> findMovie = movieRepository.findByMovieId(movieId);
-            if(findMovie.isEmpty()){
-                throw new RuntimeException("해당 영화가 존재하지 않습니다.");
-            }
-            Movie movie = findMovie.get();
-
-            HttpSession session = request.getSession(false);
-
-            if(session != null){
-                Object findUser = session.getAttribute("user");
-                if(findUser != null){
-                    User getUser = (User) findUser;
-                    Optional<User> user = userRepository.findByUserId(getUser.getUserId());
-
-                    Favorite favorite = favoriteRepository.findByUserAndMovie(user.get(), movie).get();
-                    favorite.unsetFavorite();
-                    favoriteRepository.delete(favorite);
-                }
-            }
-        }
-
-    public List<MovieCardDTO> getFavoriteMovie(HttpServletRequest request, HttpServletResponse response){
-        HttpSession session = request.getSession(false);
-
-        if(session != null){
-            Object findUser = session.getAttribute("user");
-            if(findUser != null){
-                User user = (User) findUser;
-                List<Favorite> findFavorites = favoriteRepository.findByUserId(user.getId());
-                List<MovieCardDTO> movies = new ArrayList<>();
-                for (Favorite findFavorite : findFavorites) {
-                    Movie movie = findFavorite.getMovie();
-                    MovieCardDTO movieCardDTO = movieService.mappingMovieToMovieCard(movie);
-                    movies.add(movieCardDTO);
-                }
-                return movies;
-
-            }
-        }
-        throw new RuntimeException();
-    }
-
-    public boolean isFavorite(User sessionUser, Movie movie){
-        Optional<User> findUser = userRepository.findByUserId(sessionUser.getUserId());
-        User user = findUser.get();
-
-        List<Favorite> favorites = user.getFavorites();
-
-        boolean isFavorites = false;
-
-        for (Favorite favorite : favorites) {
-            if(favorite.getMovie() == movie){
-                isFavorites = true;
-                break;
-            }
-        }
-        return isFavorites;
     }
 }

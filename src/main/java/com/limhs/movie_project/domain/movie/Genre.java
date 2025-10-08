@@ -18,6 +18,9 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long defaultId;
 
+    @OneToMany(mappedBy = "genre")
+    private List<MovieGenres> movieGenres;
+
     @JsonProperty("id")
     private int genreId;
 

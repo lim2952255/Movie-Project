@@ -18,7 +18,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     Page<Movie> findByIsPopular(boolean isPopular, Pageable pageable);
 
-    Page<Movie> findByIsPlaying(boolean isPopular, Pageable pageable);
+    Page<Movie> findByIsPlaying(boolean isPlaying, Pageable pageable);
+
+    Page<Movie> findByIsPopularAndIsPlaying(boolean isPopular,boolean isPlaying, Pageable pageable);
 
     Optional<List<Integer>> findGenreIdsByMovieId(int movieId);
 
@@ -27,10 +29,11 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("UPDATE Movie m set m.isPopular = false, m.isPlaying = false")
     void resetAllFlags();
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Movie m WHERE m.isPopular = false AND m.isPlaying = false")
-    void deleteAllUnused();
+//    @Modifying
+//    @Transactional
+//    @Query("DELETE FROM Movie m WHERE m.isPopular = false AND m.isPlaying = false")
+//    void deleteAllUnused();
 
 
+    List<Movie> findAllByIsPlayingFalseAndIsPopularFalse();
 }

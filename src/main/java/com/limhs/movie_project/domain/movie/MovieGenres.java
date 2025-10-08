@@ -30,9 +30,17 @@ public class MovieGenres {
         this.movie = movie;
 
         if(this.movie != null && !movie.getMovieGenres().contains(this)){
-            movie.getMovieGenres().add(this);
+            this.movie.getMovieGenres().add(this);
+        }
+
+        if(this.genre != null && this.genre != genre){
+            this.genre.getMovieGenres().remove(this);
         }
 
         this.genre = genre;
+
+        if(this.genre != null && !genre.getMovieGenres().contains(this)){
+            this.genre.getMovieGenres().add(this);
+        }
     }
 }

@@ -24,15 +24,31 @@ public class Favorite {
     private User user;
 
     public void setFavorite(Movie movie, User user){
+        if(this.movie != null && this.movie != movie){
+            this.movie.getFavorites().remove(this);
+        }
+
         this.movie = movie;
+
+        if(movie != null && !movie.getFavorites().contains(this)){
+            movie.getFavorites().add(this);
+        }
+
+        if(this.user != null && this.user != user){
+            this.user.getFavorites().remove(this);
+        }
+
+        this.user = user;
 
         if(user != null && !user.getFavorites().contains(this)){
             user.getFavorites().add(this);
         }
-        this.user = user;
     }
 
     public void unsetFavorite(){
+        if(movie != null && movie.getFavorites().contains(this)){
+            movie.getFavorites().remove(this);
+        }
         this.movie = null;
 
         if(user != null && user.getFavorites().contains(this)){

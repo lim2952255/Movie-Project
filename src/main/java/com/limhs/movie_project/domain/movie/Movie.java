@@ -29,6 +29,9 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     private List<MovieGenres> movieGenres = new ArrayList<>();
 
+    @OneToMany(mappedBy = "movie")
+    private List<Favorite> favorites = new ArrayList<>();
+
     @JsonProperty("genre_ids")
     private List<Integer> genreIds;
 

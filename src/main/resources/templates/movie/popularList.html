@@ -37,6 +37,29 @@
         overflow: hidden;
         text-overflow: ellipsis; /* 너무 긴 제목은 ... */
         }
+
+        .pagination-container {
+    display: flex;          /* 가로로 나열 */
+    justify-content: center; /* 수평 가운데 정렬 */
+    gap: 8px;               /* 페이지 사이 간격 */
+    margin-top: 20px;       /* 위쪽 여백 */
+    margin-bottom: 40px;    /* 하단 여백 */
+}
+
+.pagination-container a {
+    padding: 5px 10px;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #333;
+}
+
+.pagination-container a.current {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
     </style>
 </head>
 <body>
@@ -46,13 +69,15 @@
 
 <div th:replace="/layout/movieList :: movieList"></div>
 
-<div>
-    <div>
-    <span th:each="i : ${#numbers.sequence(0, totalPages -1)}">
-        <a th:href="@{/movie/popularList/{pageNumber}(pageNumber=${i + 1})}"
-           th:text="${i + 1}">페이지 번호</a>
-    </span>
-    </div>
+<div class="pagination-container">
+    <a th:href="@{/movie/popularList/{pageNumber}(pageNumber=${currentPage - 1})}"
+       th:if="${currentPage > 1}">이전</a>
+
+    <span th:text="${currentPage}">1</span>
+
+    <a th:href="@{/movie/popularList/{pageNumber}(pageNumber=${currentPage + 1})}"
+       th:if="${currentPage < totalPages}">다음</a>
+
 </div>
 </body>
 </html>

@@ -5,6 +5,7 @@ import com.limhs.movie_project.domain.User;
 import com.limhs.movie_project.domain.movie.Movie;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.domain.movie.MovieDetailDTO;
+import com.limhs.movie_project.service.FavoriteService;
 import com.limhs.movie_project.service.MovieService;
 import com.limhs.movie_project.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MovieController {
     private final MovieService movieService;
-    private final UserService userService;
+    private final FavoriteService favoriteService;
 
     @GetMapping("/popularList")
     public String redirectPopularList(){
@@ -38,6 +39,11 @@ public class MovieController {
         return "redirect:/movie/playingList/1";
     }
 
+    @GetMapping("/otherList")
+    public String redirectOtherList(){
+        return "redirect:/movie/otherList/1";
+    }
+
     @GetMapping("/popularList/{pageNumber}")
     public String popularList(@PathVariable String pageNumber, Model model){
         int number = Integer.parseInt(pageNumber) - 1;
@@ -47,6 +53,7 @@ public class MovieController {
 
         model.addAttribute("movies", movies);
         model.addAttribute("totalPages", poplarMovie.getTotalPages());
+        model.addAttribute("currentPage", number + 1);
         return "/movie/popularList";
     }
 
@@ -59,7 +66,21 @@ public class MovieController {
 
         model.addAttribute("movies", movies);
         model.addAttribute("totalPages", playingMovie.getTotalPages());
+        model.addAttribute("currentPage", number + 1);
         return "/movie/playingList";
+    }
+
+    @GetMapping("/otherList/{pageNumber}")
+    public String otherList(@PathVariable String pageNumber, Model model) {
+        int number = Integer.parseInt(pageNumber) - 1   ;
+        Page<MovieCardDTO> otherMovie = movieService.findOther(number);
+
+        List<MovieCardDTO> movies = otherMovie.getContent();
+
+        model.addAttribute("movies", movies);
+        model.addAttribute("totalPages", otherMovie.getTotalPages());
+        model.addAttribute("currentPage", number + 1);
+        return "/movie/otherList";
     }
 
     @GetMapping("/{movieId}")
@@ -75,7 +96,7 @@ public class MovieController {
         Object findUser = httpSession.getAttribute("user");
         User getUser = (User) findUser;
 
-        boolean favorite = userService.isFavorite(getUser, movie);
+        boolean favorite = favoriteService.isFavorite(getUser, movie);
         model.addAttribute("isFavorite",favorite);
 
         return "movie/movieDetail";

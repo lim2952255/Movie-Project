@@ -39,9 +39,9 @@ public class MovieSchedule {
         this.genreRepository = genreRepository;
         this.movieGenresRepository = movieGenresRepository;
     }
-    
+
     //매일 09시에 반복적으로 로직 수행
-    @Scheduled(cron = "0 35 19 * * *")
+    @Scheduled(cron = "0 14 20 * * *")
     @Transactional
     public void movieListUpdate() throws IOException, InterruptedException {
         log.info("Genre Update start");
@@ -56,8 +56,12 @@ public class MovieSchedule {
         getPlayingMovie();
 
         log.info("Update end");
+//
+//        List<Movie> unused = movieRepository.findAllByIsPlayingFalseAndIsPopularFalse();
+//        for (Movie m : unused) {
+//            movieRepository.delete(m);
+//        }
 
-        movieRepository.deleteAllUnused();
     }
 
     @Transactional

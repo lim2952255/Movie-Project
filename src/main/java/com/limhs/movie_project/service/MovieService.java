@@ -62,6 +62,17 @@ public class MovieService {
         return movieCards;
     }
 
+    public Page<MovieCardDTO> findOther(int pageNumber){
+        //Pageable
+        pageable = PageRequest.of(pageNumber, 20);
+
+        Page<Movie> otherMovies = movieRepository.findByIsPopularAndIsPlaying(false, false, pageable);
+
+        Page<MovieCardDTO> movieCards = otherMovies.map(movie -> new MovieCardDTO(movie,tmdbImageBaseUrl));
+
+        return movieCards;
+    }
+
     public MovieCardDTO mappingMovieToMovieCard(Movie movie){
         MovieCardDTO movieCardDTO = new MovieCardDTO(movie, tmdbImageBaseUrl);
         return movieCardDTO;

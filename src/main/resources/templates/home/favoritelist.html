@@ -36,13 +36,45 @@
         overflow: hidden;
         text-overflow: ellipsis; /* 너무 긴 제목은 ... */
         }
+
+        .pagination-container {
+    display: flex;          /* 가로로 나열 */
+    justify-content: center; /* 수평 가운데 정렬 */
+    gap: 8px;               /* 페이지 사이 간격 */
+    margin-top: 20px;       /* 위쪽 여백 */
+    margin-bottom: 40px;    /* 하단 여백 */
+}
+
+.pagination-container a {
+    padding: 5px 10px;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #333;
+}
+
+.pagination-container a.current {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
     </style>
 </head>
 <body>
 <div th:replace="/layout/header :: header"></div>
-<a th:href="@{/mypage/favorites}">찜한 영화 목록</a>
-<a th:href="@{/mypage/favorites}">작성한 게시물 보기</a>
-<a th:href="@{/mypage/favorites}">좋아요한 게시물보기</a>
-<a th:href="@{/mypage/favorites}">예매 현황</a>
+<p th:text="|찜한 영화목록|">찜 목록</p>
+<div th:replace="/layout/movieList :: movieList"></div>
+<div class="pagination-container">
+    <a th:href="@{/mypage/favorites/{pageNumber}(pageNumber=${currentPage - 1})}"
+       th:if="${currentPage > 1}">이전</a>
+
+    <span th:text="${currentPage}">1</span>
+
+    <a th:href="@{/mypage/favorites/{pageNumber}(pageNumber=${currentPage + 1})}"
+       th:if="${currentPage < totalPages}">다음</a>
+
+</div>
+
 </body>
 </html>
