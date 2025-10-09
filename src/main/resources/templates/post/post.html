@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.title}">게시글 조회</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f9f9f9;
+            margin: 40px;
+        }
+
+        .post-container {
+            max-width: 700px;
+            margin: auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .post-header {
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        .post-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .post-meta {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .post-content {
+            font-size: 1.1em;
+            line-height: 1.6;
+            white-space: pre-line; /* 줄바꿈 유지 */
+            margin-bottom: 30px;
+        }
+
+        .btn-back {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .btn-back:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="/layout/header :: header"></div>
+
+<div class="post-container">
+    <div class="post-header">
+        <div class="post-title" th:text="${post.title}">게시글 제목</div>
+        <div class="post-meta">
+            <p th:text="|영화 제목: ${post.movie.title}|">영화 제목</p>
+            <a th:href="@{/movie/{movieId}(movieId = ${post.movie.movieId})}">영화 페이지 이동하기</a>
+            작성자: <span th:text="${post.user.userId}"></span>
+            작성일/수정일: <span th:text="${#temporals.format(post.createdTime, 'yyyy-MM-dd HH:mm')}"></span> |
+            조회수: <span th:text="${post.viewCount}"></span>
+        </div>
+    </div>
+
+    <div class="post-content" th:text="${post.content}">
+        게시글 내용이 여기에 표시됩니다.
+    </div>
+    <div th:if="${user.userId == post.user.userId}">
+        <a th:href="@{/post/update/{movieId}/{postId}(movieId = ${post.movie.movieId},postId = ${post.id})}">수정하기</a>
+        <a th:href="@{/post/delete/{movieId}/{postId}(movieId = ${post.movie.movieId},postId = ${post.id})}">삭제하기</a>
+    </div>
+</div>
+<a th:href="@{/movie/{movieId}(movieId=${post.movie.movieId})}">영화페이지로 이동하기</a>
+</body>
+</html>

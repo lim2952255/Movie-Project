@@ -2,14 +2,12 @@ package com.limhs.movie_project.service.scheduled;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.limhs.movie_project.domain.movie.*;
-import com.limhs.movie_project.repository.GenreRepository;
-import com.limhs.movie_project.repository.MovieGenresRepository;
-import com.limhs.movie_project.repository.MovieRepository;
+import com.limhs.movie_project.repository.movie.GenreRepository;
+import com.limhs.movie_project.repository.movie.MovieGenresRepository;
+import com.limhs.movie_project.repository.movie.MovieRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

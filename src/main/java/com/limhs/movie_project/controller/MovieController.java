@@ -1,15 +1,13 @@
 package com.limhs.movie_project.controller;
 
-import com.limhs.movie_project.domain.Favorite;
+import com.limhs.movie_project.domain.post.PostDTO;
 import com.limhs.movie_project.domain.User;
 import com.limhs.movie_project.domain.movie.Movie;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.domain.movie.MovieDetailDTO;
 import com.limhs.movie_project.service.FavoriteService;
 import com.limhs.movie_project.service.MovieService;
-import com.limhs.movie_project.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.limhs.movie_project.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -28,6 +25,7 @@ import java.util.List;
 public class MovieController {
     private final MovieService movieService;
     private final FavoriteService favoriteService;
+    private final PostService postService;
 
     @GetMapping("/popularList")
     public String redirectPopularList(){
@@ -42,6 +40,11 @@ public class MovieController {
     @GetMapping("/otherList")
     public String redirectOtherList(){
         return "redirect:/movie/otherList/1";
+    }
+
+    @GetMapping("/{movieId}")
+    public String redirectMovieDetail(@PathVariable String movieId){
+        return "redirect:/movie/"+movieId+"/1";
     }
 
     @GetMapping("/popularList/{pageNumber}")
@@ -83,8 +86,8 @@ public class MovieController {
         return "/movie/otherList";
     }
 
-    @GetMapping("/{movieId}")
-    public String movieDetail(@PathVariable String movieId, HttpSession httpSession, Model model){
+    @GetMapping("/{movieId}/{pageNumber}")
+    public String movieDetail(@PathVariable String movieId, @PathVariable String pageNumber,HttpSession httpSession, Model model){
         int movieNum = Integer.parseInt(movieId);
         Movie movie = movieService.findByMovieId(movieNum);
 
@@ -99,6 +102,13 @@ public class MovieController {
         boolean favorite = favoriteService.isFavorite(getUser, movie);
         model.addAttribute("isFavorite",favorite);
 
+        int number = Integer.parseInt(pageNumber) - 1   ;
+        Page<PostDTO> post = postService.findPosts(number, movie);
+
+        List<PostDTO> posts = post.getContent();
+        model.addAttribute("posts",posts);
+        model.addAttribute("totalPages", post.getTotalPages());
+        model.addAttribute("currentPage", number + 1);
         return "movie/movieDetail";
     }
 

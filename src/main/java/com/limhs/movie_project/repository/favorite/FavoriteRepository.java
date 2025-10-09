@@ -1,4 +1,4 @@
-package com.limhs.movie_project.repository;
+package com.limhs.movie_project.repository.favorite;
 
 import com.limhs.movie_project.domain.Favorite;
 import com.limhs.movie_project.domain.User;
@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface FavoriteRepository extends JpaRepository<Favorite,Long> {

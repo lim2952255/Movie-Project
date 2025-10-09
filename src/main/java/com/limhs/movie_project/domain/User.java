@@ -1,14 +1,11 @@
 package com.limhs.movie_project.domain;
 
+import com.limhs.movie_project.domain.post.Post;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +26,9 @@ public class User {
     }
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Favorite> favorites = new ArrayList<>();

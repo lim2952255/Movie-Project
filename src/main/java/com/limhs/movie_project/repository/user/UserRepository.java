@@ -1,4 +1,4 @@
-package com.limhs.movie_project.repository;
+package com.limhs.movie_project.repository.user;
 
 import com.limhs.movie_project.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;

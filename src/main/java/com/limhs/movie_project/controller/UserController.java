@@ -1,8 +1,9 @@
 package com.limhs.movie_project.controller;
 
+import com.limhs.movie_project.domain.post.PostDTO;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.service.FavoriteService;
-import com.limhs.movie_project.service.UserService;
+import com.limhs.movie_project.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final FavoriteService favoriteService;
+    private final PostService postService;
 
     @GetMapping("mypage/favorites")
     public String favoritesRedirect(){
         return "redirect:/mypage/favorites/1";
+    }
+
+    @GetMapping("mypage/posts")
+    public String postsRedirect(){
+
+        return "redirect:/mypage/posts/1";
     }
 
     @GetMapping("mypage/favorites/{pageNumber}")
@@ -58,4 +66,19 @@ public class UserController {
 
         return "redirect:/movie/"+movieId;
     }
+
+    @GetMapping("mypage/posts/{pageNumber}")
+    public String posts(@PathVariable String pageNumber, HttpServletRequest request, HttpServletResponse response, Model model){
+        int number = Integer.parseInt(pageNumber) - 1   ;
+
+        Page<PostDTO> getPosts = postService.getWritePosts(request, response, number);
+        List<PostDTO> posts = getPosts.getContent();
+
+        model.addAttribute("posts", posts);
+        model.addAttribute("totalPages", getPosts.getTotalPages());
+        model.addAttribute("currentPage", number + 1);
+
+        return "home/postlist.html";
+    }
+
 }

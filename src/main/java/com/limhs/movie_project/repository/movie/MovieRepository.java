@@ -1,4 +1,4 @@
-package com.limhs.movie_project.repository;
+package com.limhs.movie_project.repository.movie;
 
 import com.limhs.movie_project.domain.movie.Movie;
 import jakarta.transaction.Transactional;

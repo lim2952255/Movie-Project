@@ -12,7 +12,7 @@ public class Favorite {
     public Favorite() {
     }
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne

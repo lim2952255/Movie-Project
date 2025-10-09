@@ -1,30 +1,17 @@
 package com.limhs.movie_project.service;
 
-import com.limhs.movie_project.domain.Favorite;
 import com.limhs.movie_project.domain.LoginDTO;
 import com.limhs.movie_project.domain.User;
-import com.limhs.movie_project.domain.movie.Movie;
-import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.exception.DuplicatedUserId;
 import com.limhs.movie_project.exception.LoginFailException;
-import com.limhs.movie_project.repository.FavoriteRepository;
-import com.limhs.movie_project.repository.MovieRepository;
-import com.limhs.movie_project.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import com.limhs.movie_project.repository.favorite.FavoriteRepository;
+import com.limhs.movie_project.repository.movie.MovieRepository;
+import com.limhs.movie_project.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor

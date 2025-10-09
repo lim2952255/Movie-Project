@@ -3,6 +3,7 @@ package com.limhs.movie_project.domain.movie;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.limhs.movie_project.domain.Favorite;
+import com.limhs.movie_project.domain.post.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,9 @@ public class Movie {
     private boolean isPlaying = false;
 
     private boolean isPopular = false;
+
+    @OneToMany(mappedBy = "movie")
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "movie")
     private List<MovieGenres> movieGenres = new ArrayList<>();

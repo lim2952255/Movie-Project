@@ -15,24 +15,22 @@
             <th>번호</th>
             <th>제목</th>
             <th>작성자</th>
-            <th>작성일</th>
+            <th>작성일/수정일</th>
             <th>조회수</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>1</td>
-            <td><a href="#">테스트</a></td>
-            <td>홍길동</td>
-            <td>2025-00-00</td>
-            <td>12</td>
+        <tr th:each="post : ${posts}">
+            <td th:text="${post.id}">포스트 번호</td>
+            <td>
+                <a th:href="@{/post/{postId}(postId=${post.id})}" th:text="${post.title}">제목</a>
+            </td>
+            <td th:text="${post.user.userId}">작성자 이름</td>
+            <td th:text="${#temporals.format(post.createdTime, 'yyyy-MM-dd HH:mm')}">작성일</td>
+            <td th:text="${post.viewCount}">조회수</td>
         </tr>
-        <tr>
         </tbody>
     </table>
-
-    <!-- 글쓰기 버튼 -->
-    <p><a href="/write">글쓰기</a></p>
 </div>
 
 </body>

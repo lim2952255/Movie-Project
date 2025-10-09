@@ -4,7 +4,6 @@ import com.limhs.movie_project.domain.LoginDTO;
 import com.limhs.movie_project.domain.User;
 import com.limhs.movie_project.exception.DuplicatedUserId;
 import com.limhs.movie_project.exception.LoginFailException;
-import com.limhs.movie_project.repository.UserRepository;
 import com.limhs.movie_project.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,9 +18,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Arrays;
-import java.util.Enumeration;
 
 @Controller
 @RequestMapping("/login/")
