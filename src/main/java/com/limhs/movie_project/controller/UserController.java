@@ -35,6 +35,12 @@ public class UserController {
         return "redirect:/mypage/posts/1";
     }
 
+    @GetMapping("mypage/likes")
+    public String likesRedirect(){
+
+        return "redirect:/mypage/likes/1";
+    }
+
     @GetMapping("mypage/favorites/{pageNumber}")
     public String favorites(@PathVariable String pageNumber, HttpServletRequest request, HttpServletResponse response, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
@@ -81,4 +87,16 @@ public class UserController {
         return "home/postlist.html";
     }
 
+    @GetMapping("mypage/likes/{pageNumber}")
+    public String likes(@PathVariable String pageNumber, HttpServletRequest request, HttpServletResponse response, Model model){
+        int number = Integer.parseInt(pageNumber) - 1   ;
+
+        Page<PostDTO> getPosts = postService.getLikesPosts(request, response, number);
+        List<PostDTO> posts = getPosts.getContent();
+
+        model.addAttribute("posts", posts);
+        model.addAttribute("totalPages", getPosts.getTotalPages());
+        model.addAttribute("currentPage", number + 1);
+        return "home/likelist.html";
+    }
 }

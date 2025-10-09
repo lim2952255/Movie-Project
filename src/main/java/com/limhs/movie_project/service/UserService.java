@@ -7,6 +7,9 @@ import com.limhs.movie_project.exception.LoginFailException;
 import com.limhs.movie_project.repository.favorite.FavoriteRepository;
 import com.limhs.movie_project.repository.movie.MovieRepository;
 import com.limhs.movie_project.repository.user.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,5 +58,16 @@ public class UserService {
         }
 
         return findUser.get();
+    }
+
+    public User getUser(HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession(false);
+        Object findUser = session.getAttribute("user");
+        if(findUser != null){
+            User getUser = (User) findUser;
+            User user = userRepository.findByUserId(getUser.getUserId()).get();
+            return user;
+        }
+        throw new RuntimeException();
     }
 }

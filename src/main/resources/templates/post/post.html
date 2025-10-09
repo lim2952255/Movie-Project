@@ -75,6 +75,14 @@
     <div class="post-content" th:text="${post.content}">
         게시글 내용이 여기에 표시됩니다.
     </div>
+    <span th:text="|좋아요 수: ${post.likeCount}">총 좋아요 수</span>
+    <div th:if="${userLike}">
+        <a th:href="@{/dislike/{postId}(postId = ${post.id})}">좋아요 취소하기</a>
+    </div>
+    <div th:if="!${userLike}">
+        <a th:href="@{/like/{postId}(postId = ${post.id})}">좋아요 누르기</a>
+    </div>
+
     <div th:if="${user.userId == post.user.userId}">
         <a th:href="@{/post/update/{movieId}/{postId}(movieId = ${post.movie.movieId},postId = ${post.id})}">수정하기</a>
         <a th:href="@{/post/delete/{movieId}/{postId}(movieId = ${post.movie.movieId},postId = ${post.id})}">삭제하기</a>

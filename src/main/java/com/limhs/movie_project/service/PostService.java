@@ -26,6 +26,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
     private final PostRepository postRepository;
+    private final UserService userService;
     private Pageable pageable;
 
     @Transactional
@@ -33,20 +34,14 @@ public class PostService {
         int movieId = Integer.parseInt(id);
         Movie movie = movieRepository.findByMovieId(movieId).get();
 
-        HttpSession session = request.getSession();
-        Object getUser = session.getAttribute("user");
+        User user = userService.getUser(request, response);
 
-        if(getUser != null){
-            User findUser = (User) getUser;
-            User user = userRepository.findByUserId(findUser.getUserId()).get();
+        post.setPost(movie,user);
+        post.setCreatedTime(LocalDateTime.now());
 
-            post.setPost(movie,user);
-            post.setCreatedTime(LocalDateTime.now());
+        postRepository.save(post);
+        return post;
 
-            postRepository.save(post);
-            return post;
-        }
-        throw new RuntimeException();
     }
 
     @Transactional
@@ -97,17 +92,25 @@ public class PostService {
         //Pageable
         pageable = PageRequest.of(pageNumber, 10);
 
-        HttpSession session = request.getSession();
-        Object getUser = session.getAttribute("user");
+        User user = userService.getUser(request, response);
 
-        if(getUser != null){
-            User findUser = (User) getUser;
-            User user = userRepository.findByUserId(findUser.getUserId()).get();
+        Page<Post> getWritePosts = postRepository.findByUser_UserId(user.getUserId(), pageable);
+        Page<PostDTO> posts = getWritePosts.map(post -> new PostDTO(post));
 
-            Page<Post> getWritePosts = postRepository.findByUser_UserId(user.getUserId(), pageable);
-            Page<PostDTO> posts = getWritePosts.map(post -> new PostDTO(post));
-            return posts;
-        }
-        throw new RuntimeException();
+        return posts;
+
+    }
+
+    @Transactional
+    public Page<PostDTO> getLikesPosts(HttpServletRequest request, HttpServletResponse response, int pageNumber) {
+        //Pageable
+        pageable = PageRequest.of(pageNumber, 10);
+
+        User user = userService.getUser(request, response);
+
+        Page<Post> getlikePosts = postRepository.findByLikes_User(user, pageable);
+        Page<PostDTO> posts = getlikePosts.map(post -> new PostDTO(post));
+
+        return posts;
     }
 }

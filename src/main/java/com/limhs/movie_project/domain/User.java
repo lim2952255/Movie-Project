@@ -28,6 +28,9 @@ public class User {
     private Long id;
 
     @OneToMany(mappedBy = "user")
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")

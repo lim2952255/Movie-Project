@@ -81,17 +81,17 @@ p a:hover {
 <body>
 <div th:replace="/layout/header :: header"></div>
 
-<p th:text="|작성한 게시물 목록|">게시물 목록</p>
+<p th:text="|좋아요 누른 게시물 목록|">게시물 목록</p>
 
 <div th:replace="/layout/board :: board"></div>
 
 <div class="pagination-container">
-    <a th:href="@{/mypage/posts/{pageNumber}(pageNumber=${currentPage - 1})}"
+    <a th:href="@{/mypage/likes/{pageNumber}(pageNumber=${currentPage - 1})}"
        th:if="${currentPage > 1}">이전</a>
 
     <span th:text="${currentPage}">1</span>
 
-    <a th:href="@{/mypage/posts/{pageNumber}(pageNumber=${currentPage + 1})}"
+    <a th:href="@{/mypage/likes/{pageNumber}(pageNumber=${currentPage + 1})}"
        th:if="${currentPage < totalPages}">다음</a>
 
 </div>

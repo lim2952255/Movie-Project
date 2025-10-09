@@ -1,7 +1,10 @@
 package com.limhs.movie_project.controller;
 
+import com.limhs.movie_project.domain.User;
 import com.limhs.movie_project.domain.post.Post;
+import com.limhs.movie_project.service.LikeService;
 import com.limhs.movie_project.service.PostService;
+import com.limhs.movie_project.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 public class PostController {
     private final PostService postService;
+    private final UserService userService;
+    private final LikeService likeService;
 
     @GetMapping("/create/{movieId}")
     public String postWrite(@PathVariable String movieId,Model model){
@@ -79,11 +84,14 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public String joinPost(@PathVariable String postId, Model model){
+    public String joinPost(@PathVariable String postId, HttpServletRequest request, HttpServletResponse response ,Model model){
         long id = Long.parseLong(postId);
         Post post = postService.findPost(id);
-        model.addAttribute("post",post);
+        User user = userService.getUser(request, response);
 
+        boolean like = likeService.userLikesPost(post, user);
+        model.addAttribute("post",post);
+        model.addAttribute("userLike",like);
         return "post/post";
     }
 }

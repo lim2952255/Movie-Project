@@ -27,6 +27,7 @@ public class FavoriteService {
     private final MovieRepository movieRepository;
     private final UserRepository userRepository;
     private final FavoriteRepository favoriteRepository;
+    private final UserService userService;
 
     @Value("${tmdb.image.base.url}")
     private String tmdbImageBaseUrl;
@@ -39,24 +40,16 @@ public class FavoriteService {
         }
         Movie movie = findMovie.get();
 
-        HttpSession session = request.getSession(false);
+        User user = userService.getUser(request, response);
 
-        if(session != null){
-            Object findUser = session.getAttribute("user");
-            if(findUser != null){
-                User getUser = (User) findUser;
-                Optional<User> user = userRepository.findByUserId(getUser.getUserId());
-
-                Optional<Favorite> existFavorite = favoriteRepository.findByUserAndMovie(user.get(), movie); // 중복 체크
-                if(existFavorite.isPresent()){
-                    return;
-                }
-
-                Favorite favorite = new Favorite();
-                favorite.setFavorite(movie, user.get());
-                favoriteRepository.save(favorite);
-            }
+        Optional<Favorite> existFavorite = favoriteRepository.findByUserAndMovie(user, movie); // 중복 체크
+        if(existFavorite.isPresent()){
+            return;
         }
+
+        Favorite favorite = new Favorite();
+        favorite.setFavorite(movie, user);
+        favoriteRepository.save(favorite);
     }
 
     @Transactional
@@ -67,19 +60,12 @@ public class FavoriteService {
         }
         Movie movie = findMovie.get();
 
-        HttpSession session = request.getSession(false);
+        User user = userService.getUser(request, response);
 
-        if(session != null){
-            Object findUser = session.getAttribute("user");
-            if(findUser != null){
-                User getUser = (User) findUser;
-                Optional<User> user = userRepository.findByUserId(getUser.getUserId());
+        Favorite favorite = favoriteRepository.findByUserAndMovie(user, movie).get();
+        favorite.unsetFavorite();
+        favoriteRepository.delete(favorite);
 
-                Favorite favorite = favoriteRepository.findByUserAndMovie(user.get(), movie).get();
-                favorite.unsetFavorite();
-                favoriteRepository.delete(favorite);
-            }
-        }
     }
 
     @Transactional
@@ -87,17 +73,11 @@ public class FavoriteService {
         HttpSession session = request.getSession(false);
         Pageable pageable = PageRequest.of(pageNumber,20);
 
-        if(session != null){
-            Object findUser = session.getAttribute("user");
-            if(findUser != null){
-                User user = (User) findUser;
-                Page<Favorite> findFavorites = favoriteRepository.findByUserId(user.getId(), pageable);
-                Page<MovieCardDTO> movieCards = findFavorites.map(favorite -> new MovieCardDTO(favorite.getMovie(), tmdbImageBaseUrl));
-                return movieCards;
+        User user = userService.getUser(request, response);
 
-            }
-        }
-        throw new RuntimeException();
+        Page<Favorite> findFavorites = favoriteRepository.findByUserId(user.getId(), pageable);
+        Page<MovieCardDTO> movieCards = findFavorites.map(favorite -> new MovieCardDTO(favorite.getMovie(), tmdbImageBaseUrl));
+        return movieCards;
     }
 
     @Transactional
