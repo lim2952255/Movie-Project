@@ -1,12 +1,13 @@
-package com.limhs.movie_project.service;
+package com.limhs.movie_project.service.favorite;
 
-import com.limhs.movie_project.domain.Favorite;
-import com.limhs.movie_project.domain.User;
+import com.limhs.movie_project.domain.favorite.Favorite;
+import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.repository.favorite.FavoriteRepository;
 import com.limhs.movie_project.repository.movie.MovieRepository;
 import com.limhs.movie_project.repository.user.UserRepository;
+import com.limhs.movie_project.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

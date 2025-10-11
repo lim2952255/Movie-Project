@@ -1,5 +1,6 @@
 package com.limhs.movie_project.domain.movie;
 
+import com.limhs.movie_project.domain.genre.Genre;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,13 +1,13 @@
-package com.limhs.movie_project.controller;
+package com.limhs.movie_project.controller.movie;
 
 import com.limhs.movie_project.domain.post.PostDTO;
-import com.limhs.movie_project.domain.User;
+import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.domain.movie.MovieDetailDTO;
-import com.limhs.movie_project.service.FavoriteService;
-import com.limhs.movie_project.service.MovieService;
-import com.limhs.movie_project.service.PostService;
+import com.limhs.movie_project.service.favorite.FavoriteService;
+import com.limhs.movie_project.service.movie.MovieService;
+import com.limhs.movie_project.service.post.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

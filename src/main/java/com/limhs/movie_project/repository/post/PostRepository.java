@@ -1,6 +1,6 @@
 package com.limhs.movie_project.repository.post;
 
-import com.limhs.movie_project.domain.User;
+import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.post.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

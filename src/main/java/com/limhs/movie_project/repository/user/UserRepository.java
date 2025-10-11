@@ -1,6 +1,6 @@
 package com.limhs.movie_project.repository.user;
 
-import com.limhs.movie_project.domain.User;
+import com.limhs.movie_project.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

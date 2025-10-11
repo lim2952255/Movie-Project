@@ -1,7 +1,7 @@
 package com.limhs.movie_project.repository.favorite;
 
-import com.limhs.movie_project.domain.Favorite;
-import com.limhs.movie_project.domain.User;
+import com.limhs.movie_project.domain.favorite.Favorite;
+import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

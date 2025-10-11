@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+<body>
+<div th:fragment = "commentList">
+    <p th:text="|댓글 수: ${post.commentCount}|">총 댓글 수</p>
+    <div class="comments-container">
+        <div th:each="comment : ${comments}" class="comment-card">
+            <div class="comment-meta">
+                작성자: <span th:text="${comment.user.userId}"></span> |
+                작성일: <span th:text="${#temporals.format(comment.createdTime, 'yyyy-MM-dd HH:mm')}"></span>
+                좋아요 수: <span th:text="${comment.commentLikeCount}"></span>
+                <div th:if="!${comment.userLike}">
+                    <a th:href="@{/commentLike/{postId}/{commentId}(postId = ${post.id},commentId = ${comment.id})}"> 좋아요 누르기</a>
+                </div>
+                <div th:if="${comment.userLike}">
+                    <a th:href="@{/commentDislike/{postId}/{commentId}(postId = ${post.id},commentId = ${comment.id})}"> 좋아요 취소하기</a>
+                </div>
+            </div>
+            <div class="comment-content" th:text="${comment.content}">메세지 본문</div>
+            <div th:if="${user.userId} == ${comment.user.userId}">
+                <a th:href="@{/comment/update/{postId}/{commentId}(postId = ${post.id},commentId = ${comment.id})}">댓글 수정하기</a>
+                <a th:href="@{/comment/delete/{postId}/{commentId}(postId = ${post.id},commentId = ${comment.id})}">댓글 삭제하기</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination-container">
+        <a th:href="@{/post/{postId}/{pageNumber}(postId=${post.id}, pageNumber=${currentPage - 1})}"
+           th:if="${currentPage > 1}">이전</a>
+
+        <span th:text="${currentPage}">1</span>
+
+        <a th:href="@{/post/{postId}/{pageNumber}(postId=${post.id},pageNumber=${currentPage + 1})}"
+           th:if="${currentPage < totalPages}">다음</a>
+
+    </div>
+
+    <a th:href="@{/comment/{postId}(postId = ${post.id})}">댓글 작성하기</a>
+</div>
+</body>
+</html>

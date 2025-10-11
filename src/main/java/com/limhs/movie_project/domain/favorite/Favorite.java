@@ -1,5 +1,6 @@
-package com.limhs.movie_project.domain;
+package com.limhs.movie_project.domain.favorite;
 
+import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
 import jakarta.persistence.*;
 import lombok.Getter;

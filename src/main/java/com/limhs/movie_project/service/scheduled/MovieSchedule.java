@@ -1,6 +1,8 @@
 package com.limhs.movie_project.service.scheduled;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.limhs.movie_project.domain.genre.Genre;
+import com.limhs.movie_project.domain.genre.GenreList;
 import com.limhs.movie_project.domain.movie.*;
 import com.limhs.movie_project.repository.movie.GenreRepository;
 import com.limhs.movie_project.repository.movie.MovieGenresRepository;

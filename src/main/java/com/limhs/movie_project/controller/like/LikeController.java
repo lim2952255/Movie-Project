@@ -1,6 +1,6 @@
-package com.limhs.movie_project.controller;
+package com.limhs.movie_project.controller.like;
 
-import com.limhs.movie_project.service.LikeService;
+import com.limhs.movie_project.service.like.LikeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

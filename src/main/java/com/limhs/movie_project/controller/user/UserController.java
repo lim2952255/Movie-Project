@@ -1,9 +1,9 @@
-package com.limhs.movie_project.controller;
+package com.limhs.movie_project.controller.user;
 
 import com.limhs.movie_project.domain.post.PostDTO;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
-import com.limhs.movie_project.service.FavoriteService;
-import com.limhs.movie_project.service.PostService;
+import com.limhs.movie_project.service.favorite.FavoriteService;
+import com.limhs.movie_project.service.post.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

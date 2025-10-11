@@ -1,6 +1,6 @@
 package com.limhs.movie_project.interceptor;
 
-import com.limhs.movie_project.domain.User;
+import com.limhs.movie_project.domain.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

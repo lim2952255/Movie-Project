@@ -1,11 +1,11 @@
-package com.limhs.movie_project.service;
+package com.limhs.movie_project.service.like;
 
-import com.limhs.movie_project.domain.Like;
-import com.limhs.movie_project.domain.User;
-import com.limhs.movie_project.domain.movie.Movie;
+import com.limhs.movie_project.domain.like.Like;
+import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.repository.like.LikeRepository;
 import com.limhs.movie_project.repository.post.PostRepository;
+import com.limhs.movie_project.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -62,5 +62,9 @@ public class LikeService {
             return false;
         }
         return true;
+    }
+
+    public void deleteByPost(Post post){
+        likeRepository.deleteByPost(post);
     }
 }

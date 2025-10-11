@@ -1,4 +1,4 @@
-package com.limhs.movie_project.service;
+package com.limhs.movie_project.service.movie;
 
 import com.limhs.movie_project.domain.movie.*;
 import com.limhs.movie_project.repository.movie.GenreRepository;

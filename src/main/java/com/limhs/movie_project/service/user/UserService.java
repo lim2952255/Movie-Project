@@ -1,12 +1,13 @@
-package com.limhs.movie_project.service;
+package com.limhs.movie_project.service.user;
 
 import com.limhs.movie_project.domain.LoginDTO;
-import com.limhs.movie_project.domain.User;
+import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.exception.DuplicatedUserId;
 import com.limhs.movie_project.exception.LoginFailException;
 import com.limhs.movie_project.repository.favorite.FavoriteRepository;
 import com.limhs.movie_project.repository.movie.MovieRepository;
 import com.limhs.movie_project.repository.user.UserRepository;
+import com.limhs.movie_project.service.movie.MovieService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

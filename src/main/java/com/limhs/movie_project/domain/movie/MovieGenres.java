@@ -1,5 +1,6 @@
 package com.limhs.movie_project.domain.movie;
 
+import com.limhs.movie_project.domain.genre.Genre;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

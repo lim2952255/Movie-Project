@@ -1,7 +1,8 @@
 package com.limhs.movie_project.domain.post;
 
-import com.limhs.movie_project.domain.Like;
-import com.limhs.movie_project.domain.User;
+import com.limhs.movie_project.domain.like.Like;
+import com.limhs.movie_project.domain.user.User;
+import com.limhs.movie_project.domain.comment.Comment;
 import com.limhs.movie_project.domain.movie.Movie;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +18,9 @@ import java.util.List;
 public class Post {
     public Post() {
     }
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
     private List<Like> likes = new ArrayList<>();
@@ -74,5 +78,9 @@ public class Post {
 
     public int getLikeCount() {
         return likes != null ? likes.size() : 0;
+    }
+
+    public int getCommentCount(){
+        return comments != null ? comments.size() : 0;
     }
 }

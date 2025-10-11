@@ -1,12 +1,11 @@
-package com.limhs.movie_project.domain.movie;
+package com.limhs.movie_project.domain.genre;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.limhs.movie_project.domain.movie.MovieGenres;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

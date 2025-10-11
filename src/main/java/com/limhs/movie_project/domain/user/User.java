@@ -1,5 +1,9 @@
-package com.limhs.movie_project.domain;
+package com.limhs.movie_project.domain.user;
 
+import com.limhs.movie_project.domain.comment.Comment;
+import com.limhs.movie_project.domain.favorite.Favorite;
+import com.limhs.movie_project.domain.like.CommentLike;
+import com.limhs.movie_project.domain.like.Like;
 import com.limhs.movie_project.domain.post.Post;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -26,6 +30,12 @@ public class User {
     }
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "user")
+    private List<CommentLike> commentLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Like> likes = new ArrayList<>();

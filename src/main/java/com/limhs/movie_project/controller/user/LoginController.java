@@ -1,10 +1,10 @@
-package com.limhs.movie_project.controller;
+package com.limhs.movie_project.controller.user;
 
 import com.limhs.movie_project.domain.LoginDTO;
-import com.limhs.movie_project.domain.User;
+import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.exception.DuplicatedUserId;
 import com.limhs.movie_project.exception.LoginFailException;
-import com.limhs.movie_project.service.UserService;
+import com.limhs.movie_project.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

@@ -1,15 +1,16 @@
-package com.limhs.movie_project.service;
+package com.limhs.movie_project.service.post;
 
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.domain.post.PostDTO;
-import com.limhs.movie_project.domain.User;
+import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
 import com.limhs.movie_project.repository.movie.MovieRepository;
 import com.limhs.movie_project.repository.post.PostRepository;
 import com.limhs.movie_project.repository.user.UserRepository;
+import com.limhs.movie_project.service.user.UserService;
+import com.limhs.movie_project.service.like.LikeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,7 @@ public class PostService {
     private final MovieRepository movieRepository;
     private final PostRepository postRepository;
     private final UserService userService;
+    private final LikeService likeService;
     private Pageable pageable;
 
     @Transactional
@@ -72,6 +74,7 @@ public class PostService {
             throw new RuntimeException();
         }
         Post post = findPost.get();
+        likeService.deleteByPost(post);
 
         post.deletePost();
         postRepository.delete(post);

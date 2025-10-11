@@ -1,4 +1,4 @@
-package com.limhs.movie_project.domain.movie;
+package com.limhs.movie_project.domain.genre;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
