@@ -4,10 +4,9 @@ import com.limhs.movie_project.domain.like.Like;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.repository.like.LikeRepository;
-import com.limhs.movie_project.repository.post.PostRepository;
+import com.limhs.movie_project.service.post.PostService;
 import com.limhs.movie_project.service.user.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,19 +16,14 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class LikeService {
-    private final PostRepository postRepository;
     private final LikeRepository likeRepository;
     private final UserService userService;
+    private final PostService postService;
 
     @Transactional
-    public void saveLike(Long postId, HttpServletRequest request, HttpServletResponse response){
-        Optional<Post> findPost = postRepository.findById(postId);
-        if(findPost.isEmpty()){
-            throw new RuntimeException();
-        }
-        Post post = findPost.get();
-
-        User user = userService.getUser(request, response);
+    public void saveLike(Long postId, HttpSession session){
+        Post post = postService.findPost(postId);
+        User user = userService.getUser(session);
 
         Like like = new Like();
 
@@ -38,22 +32,20 @@ public class LikeService {
     }
 
     @Transactional
-    public void deleteLike(Long postId, HttpServletRequest request, HttpServletResponse response){
-        Optional<Post> findPost = postRepository.findById(postId);
-        if(findPost.isEmpty()){
-            throw new RuntimeException();
-        }
-        Post post = findPost.get();
-        User user = userService.getUser(request, response);
-
+    public Like findLike(Post post, User user){
         Optional<Like> findLike = likeRepository.findByPostAndUser(post, user);
         if(findLike.isEmpty()){
             throw new RuntimeException();
         }
-        Like like = findLike.get();
+        return findLike.get();
+    }
 
+    @Transactional
+    public void deleteLike(Long postId,HttpSession session){
+        Post post = postService.findPost(postId);
+        User user = userService.getUser(session);
+        Like like = findLike(post, user);
         like.deleteLike();
-        likeRepository.delete(like);
     }
 
     public boolean userLikesPost(Post post, User user){

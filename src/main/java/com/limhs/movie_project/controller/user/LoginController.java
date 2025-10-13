@@ -99,8 +99,7 @@ public class LoginController {
     }
 
     @GetMapping("logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response){
-        HttpSession session = request.getSession(false);
+    public String logout(HttpSession session){
         session.invalidate();
 
         return "redirect:/home";

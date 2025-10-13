@@ -1,25 +1,22 @@
 package com.limhs.movie_project.domain.movie;
 
 import com.limhs.movie_project.domain.genre.Genre;
+import com.limhs.movie_project.domain.mappedSuperClass.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter @Setter
-public class MovieGenres {
+public class MovieGenres extends BaseEntity {
     public MovieGenres() {
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;
 

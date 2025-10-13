@@ -1,5 +1,6 @@
 package com.limhs.movie_project.controller.post;
 
+import com.limhs.movie_project.domain.movie.Movie;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.comment.CommentDTO;
 import com.limhs.movie_project.domain.post.Post;
@@ -7,8 +8,7 @@ import com.limhs.movie_project.service.comment.CommentService;
 import com.limhs.movie_project.service.like.LikeService;
 import com.limhs.movie_project.service.post.PostService;
 import com.limhs.movie_project.service.user.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -46,13 +46,13 @@ public class PostController {
     }
 
     @PostMapping("/create/{movieId}")
-    public String create(@Validated Post post, BindingResult bindingResult, @PathVariable String movieId, HttpServletRequest request, HttpServletResponse response, Model model){
+    public String create(@Validated Post post, BindingResult bindingResult, @PathVariable String movieId, HttpSession session, Model model){
         if(bindingResult.hasErrors()){
             log.info("errors={}",bindingResult);
             return "post/write";
         }
 
-        Post savedPost = postService.savePost(post, movieId, request, response);
+        Post savedPost = postService.savePost(post, movieId, session);
 
         model.addAttribute("post", savedPost);
 
@@ -88,19 +88,18 @@ public class PostController {
     @GetMapping("/delete/{movieId}/{postId}")
     public String delete(@PathVariable String movieId, @PathVariable String postId){
         Long id = Long.parseLong(postId);
-
         postService.deletePost(id);
 
         return "redirect:/movie/"+movieId;
     }
 
     @GetMapping("/{postId}/{pageNumber}")
-    public String joinPost(@PathVariable String postId, @PathVariable String pageNumber ,HttpServletRequest request, HttpServletResponse response ,Model model){
+    public String joinPost(@PathVariable String postId, @PathVariable String pageNumber , HttpSession session, Model model){
         long id = Long.parseLong(postId);
         int number = Integer.parseInt(pageNumber) - 1;
 
         Post post = postService.findPost(id);
-        User user = userService.getUser(request, response);
+        User user = userService.getUser(session);
 
         boolean like = likeService.userLikesPost(post, user);
 

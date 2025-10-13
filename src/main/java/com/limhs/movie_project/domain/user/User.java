@@ -4,6 +4,7 @@ import com.limhs.movie_project.domain.comment.Comment;
 import com.limhs.movie_project.domain.favorite.Favorite;
 import com.limhs.movie_project.domain.like.CommentLike;
 import com.limhs.movie_project.domain.like.Like;
+import com.limhs.movie_project.domain.mappedSuperClass.BaseEntity;
 import com.limhs.movie_project.domain.post.Post;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -17,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class User {
+public class User extends BaseEntity {
     public User() {
     }
 
@@ -28,22 +29,20 @@ public class User {
         this.userId = user.getUserId();
         this.password = user.getPassword();
     }
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentLike> commentLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Favorite> favorites = new ArrayList<>();
 
     @NotBlank(message = "사용자 이름값은 필수입니다.")
@@ -60,4 +59,5 @@ public class User {
 
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{10,}$", message = "비밀번호에는 영어,숫자,특수문자가 모두 포함되어야 하며 최소 길이는 10이상이어야 합니다.")
     private String password;
+
 }

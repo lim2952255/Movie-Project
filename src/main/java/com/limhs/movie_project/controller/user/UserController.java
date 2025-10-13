@@ -4,8 +4,7 @@ import com.limhs.movie_project.domain.post.PostDTO;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.service.favorite.FavoriteService;
 import com.limhs.movie_project.service.post.PostService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -42,10 +41,10 @@ public class UserController {
     }
 
     @GetMapping("mypage/favorites/{pageNumber}")
-    public String favorites(@PathVariable String pageNumber, HttpServletRequest request, HttpServletResponse response, Model model){
+    public String favorites(@PathVariable String pageNumber,HttpSession session, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<MovieCardDTO> favoriteMovie = favoriteService.getFavoriteMovie(request, response, number);
+        Page<MovieCardDTO> favoriteMovie = favoriteService.getFavoriteMovie(session, number);
         List<MovieCardDTO> movies = favoriteMovie.getContent();
 
         model.addAttribute("movies", movies);
@@ -56,28 +55,28 @@ public class UserController {
     }
 
     @PostMapping("user/{movieId}/favorite")
-    public String favorite(@PathVariable String movieId, HttpServletRequest request, HttpServletResponse response, Model model){
+    public String favorite(@PathVariable String movieId, HttpSession session){
         int movieNum = Integer.parseInt(movieId);
 
-        favoriteService.setFavorites(movieNum,request,response);
+        favoriteService.setFavorites(movieNum,session);
 
         return "redirect:/movie/"+movieId;
     }
 
     @PostMapping("user/{movieId}/unfavorite")
-    public String unfavorite(@PathVariable String movieId, HttpServletRequest request, HttpServletResponse response, Model model){
+    public String unfavorite(@PathVariable String movieId, HttpSession session){
         int movieNum = Integer.parseInt(movieId);
 
-        favoriteService.unsetFavorites(movieNum,request,response);
+        favoriteService.unsetFavorites(movieNum,session);
 
         return "redirect:/movie/"+movieId;
     }
 
     @GetMapping("mypage/posts/{pageNumber}")
-    public String posts(@PathVariable String pageNumber, HttpServletRequest request, HttpServletResponse response, Model model){
+    public String posts(@PathVariable String pageNumber, HttpSession session, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<PostDTO> getPosts = postService.getWritePosts(request, response, number);
+        Page<PostDTO> getPosts = postService.getWritePosts(session, number);
         List<PostDTO> posts = getPosts.getContent();
 
         model.addAttribute("posts", posts);
@@ -88,10 +87,10 @@ public class UserController {
     }
 
     @GetMapping("mypage/likes/{pageNumber}")
-    public String likes(@PathVariable String pageNumber, HttpServletRequest request, HttpServletResponse response, Model model){
+    public String likes(@PathVariable String pageNumber, HttpSession session, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<PostDTO> getPosts = postService.getLikesPosts(request, response, number);
+        Page<PostDTO> getPosts = postService.getLikesPosts(session, number);
         List<PostDTO> posts = getPosts.getContent();
 
         model.addAttribute("posts", posts);

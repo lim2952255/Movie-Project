@@ -6,10 +6,8 @@ import com.limhs.movie_project.domain.movie.Movie;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.repository.favorite.FavoriteRepository;
 import com.limhs.movie_project.repository.movie.MovieRepository;
-import com.limhs.movie_project.repository.user.UserRepository;
+import com.limhs.movie_project.service.movie.MovieService;
 import com.limhs.movie_project.service.user.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,22 +24,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FavoriteService {
     private final MovieRepository movieRepository;
-    private final UserRepository userRepository;
     private final FavoriteRepository favoriteRepository;
     private final UserService userService;
+    private final MovieService movieService;
 
     @Value("${tmdb.image.base.url}")
     private String tmdbImageBaseUrl;
 
     @Transactional
-    public void setFavorites(int movieId, HttpServletRequest request, HttpServletResponse response){
+    public void setFavorites(int movieId,HttpSession session){
         Optional<Movie> findMovie = movieRepository.findByMovieId(movieId);
         if(findMovie.isEmpty()){
             throw new RuntimeException("해당 영화가 존재하지 않습니다.");
         }
         Movie movie = findMovie.get();
 
-        User user = userService.getUser(request, response);
+        User user = userService.getUser(session);
 
         Optional<Favorite> existFavorite = favoriteRepository.findByUserAndMovie(user, movie); // 중복 체크
         if(existFavorite.isPresent()){
@@ -54,27 +52,29 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void unsetFavorites(int movieId, HttpServletRequest request, HttpServletResponse response){
-        Optional<Movie> findMovie = movieRepository.findByMovieId(movieId);
-        if(findMovie.isEmpty()){
-            throw new RuntimeException("해당 영화가 존재하지 않습니다.");
-        }
-        Movie movie = findMovie.get();
+    public void unsetFavorites(int movieId, HttpSession session){
+        Movie movie = movieService.findByMovieId(movieId);
+        User user = userService.getUser(session);
 
-        User user = userService.getUser(request, response);
-
-        Favorite favorite = favoriteRepository.findByUserAndMovie(user, movie).get();
+        Favorite favorite = findFavorite(user, movie);
         favorite.unsetFavorite();
-        favoriteRepository.delete(favorite);
 
     }
 
     @Transactional
-    public Page<MovieCardDTO> getFavoriteMovie(HttpServletRequest request, HttpServletResponse response, int pageNumber){
-        HttpSession session = request.getSession(false);
+    public Favorite findFavorite(User user, Movie movie){
+        Optional<Favorite> findFavorite = favoriteRepository.findByUserAndMovie(user, movie);
+        if(findFavorite.isEmpty()){
+            throw new RuntimeException("해당 엔티티를 찾을 수 없습니다");
+        }
+        return findFavorite.get();
+    }
+
+    @Transactional
+    public Page<MovieCardDTO> getFavoriteMovie(HttpSession session, int pageNumber){
         Pageable pageable = PageRequest.of(pageNumber,20);
 
-        User user = userService.getUser(request, response);
+        User user = userService.getUser(session);
 
         Page<Favorite> findFavorites = favoriteRepository.findByUserId(user.getId(), pageable);
         Page<MovieCardDTO> movieCards = findFavorites.map(favorite -> new MovieCardDTO(favorite.getMovie(), tmdbImageBaseUrl));
@@ -82,10 +82,8 @@ public class FavoriteService {
     }
 
     @Transactional
-    public boolean isFavorite(User sessionUser, Movie movie){
-        Optional<User> findUser = userRepository.findByUserId(sessionUser.getUserId());
-        User user = findUser.get();
-
+    public boolean isFavorite(HttpSession session, Movie movie){
+        User user = userService.getUser(session);
         List<Favorite> favorites = user.getFavorites();
 
         boolean isFavorites = false;

@@ -7,8 +7,7 @@ import com.limhs.movie_project.domain.like.CommentLike;
 import com.limhs.movie_project.repository.comment.CommentRepository;
 import com.limhs.movie_project.repository.like.CommentLikeRepository;
 import com.limhs.movie_project.service.user.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -27,13 +26,9 @@ public class CommentLikeService {
     private final UserService userService;
 
     @Transactional
-    public void setCommentLike(Long commentId, HttpServletRequest request, HttpServletResponse response){
-        Optional<Comment> findComment = commentRepository.findById(commentId);
-        if(findComment.isEmpty()){
-            throw new RuntimeException();
-        }
-        Comment comment = findComment.get();
-        User user = userService.getUser(request, response);
+    public void setCommentLike(Long commentId, HttpSession session){
+        Comment comment = findComment(commentId);
+        User user = userService.getUser(session);
 
         CommentLike commentLike = new CommentLike();
         commentLike.setCommentLike(user,comment);
@@ -42,24 +37,31 @@ public class CommentLikeService {
     }
 
     @Transactional
-    public void deleteCommentLike(Long commentId, HttpServletRequest request, HttpServletResponse response) {
+    public void deleteCommentLike(Long commentId,HttpSession session) {
+        Comment comment = findComment(commentId);
+        User user = userService.getUser(session);
+
+        CommentLike commentLike = findCommentLike(comment, user);
+        commentLike.deleteCommentLike();
+    }
+
+    @Transactional
+    public Comment findComment(Long commentId){
         Optional<Comment> findComment = commentRepository.findById(commentId);
         if(findComment.isEmpty()){
             throw new RuntimeException();
         }
-        Comment comment = findComment.get();
-        User user = userService.getUser(request, response);
+        return findComment.get();
+    }
 
+    @Transactional
+    public CommentLike findCommentLike(Comment comment, User user){
         Optional<CommentLike> findCommentLike = commentLikeRepository.findByCommentAndUser(comment, user);
         if(findCommentLike.isEmpty()){
             throw new RuntimeException();
         }
-        CommentLike commentLike = findCommentLike.get();
-        commentLike.deleteCommentLike();
-
-        commentLikeRepository.delete(commentLike);
+        return findCommentLike.get();
     }
-
     @Transactional
     public boolean userLikesComment(User user, CommentDTO commentDTO){
         Optional<CommentLike> findCommentLike = commentLikeRepository.findByCommentIdAndUser(commentDTO.getId(), user);
@@ -67,10 +69,5 @@ public class CommentLikeService {
             return false;
         }
         return true;
-    }
-
-    @Transactional
-    public void deleteByComment(Comment comment){
-        commentLikeRepository.deleteByComment(comment);
     }
 }

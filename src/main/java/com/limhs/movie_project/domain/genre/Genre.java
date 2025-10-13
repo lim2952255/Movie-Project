@@ -1,6 +1,7 @@
 package com.limhs.movie_project.domain.genre;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.limhs.movie_project.domain.mappedSuperClass.BaseEntity;
 import com.limhs.movie_project.domain.movie.MovieGenres;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,13 +12,10 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Genre {
+@AttributeOverride(name = "id", column = @Column(name = "default_id"))
+public class Genre extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long defaultId;
-
-    @OneToMany(mappedBy = "genre")
+    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieGenres> movieGenres;
 
     @JsonProperty("id")

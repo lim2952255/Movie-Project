@@ -4,12 +4,8 @@ import com.limhs.movie_project.domain.LoginDTO;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.exception.DuplicatedUserId;
 import com.limhs.movie_project.exception.LoginFailException;
-import com.limhs.movie_project.repository.favorite.FavoriteRepository;
-import com.limhs.movie_project.repository.movie.MovieRepository;
 import com.limhs.movie_project.repository.user.UserRepository;
-import com.limhs.movie_project.service.movie.MovieService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +18,6 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final MovieRepository movieRepository;
-    private final FavoriteRepository favoriteRepository;
-    private final MovieService movieService;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${tmdb.image.base.url}")
@@ -61,8 +54,7 @@ public class UserService {
         return findUser.get();
     }
 
-    public User getUser(HttpServletRequest request, HttpServletResponse response){
-        HttpSession session = request.getSession(false);
+    public User getUser(HttpSession session){
         Object findUser = session.getAttribute("user");
         if(findUser != null){
             User getUser = (User) findUser;

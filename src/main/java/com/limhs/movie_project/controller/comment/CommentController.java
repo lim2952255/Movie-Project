@@ -2,8 +2,7 @@ package com.limhs.movie_project.controller.comment;
 
 import com.limhs.movie_project.domain.comment.Comment;
 import com.limhs.movie_project.service.comment.CommentService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -32,14 +31,14 @@ public class CommentController {
     }
 
     @PostMapping("/{postId}")
-    public String commentSave(@Validated Comment comment, BindingResult bindingResult, @PathVariable String postId, HttpServletRequest request, HttpServletResponse response){
+    public String commentSave(@Validated Comment comment, BindingResult bindingResult, @PathVariable String postId, HttpSession session){
         if(bindingResult.hasErrors()){
             log.info("errors={}",bindingResult);
             return "comment/comment";
         }
         Long id = Long.parseLong(postId);
 
-        commentService.saveComment(comment,id,request,response);
+        commentService.saveComment(comment,id,session);
 
         return "redirect:/post/"+postId;
     }

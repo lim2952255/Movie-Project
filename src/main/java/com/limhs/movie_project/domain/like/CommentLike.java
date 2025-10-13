@@ -1,5 +1,6 @@
 package com.limhs.movie_project.domain.like;
 
+import com.limhs.movie_project.domain.mappedSuperClass.BaseEntity;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.comment.Comment;
 import jakarta.persistence.*;
@@ -8,18 +9,15 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter
-public class CommentLike {
+public class CommentLike extends BaseEntity {
     public CommentLike() {
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private Comment comment;
 

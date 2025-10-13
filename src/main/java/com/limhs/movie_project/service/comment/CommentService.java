@@ -6,10 +6,10 @@ import com.limhs.movie_project.domain.comment.CommentDTO;
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.repository.comment.CommentRepository;
 import com.limhs.movie_project.repository.post.PostRepository;
+import com.limhs.movie_project.service.post.PostService;
 import com.limhs.movie_project.service.user.UserService;
 import com.limhs.movie_project.service.like.CommentLikeService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,19 +29,16 @@ import java.util.Optional;
 @Getter @Setter
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final CommentLikeService commentLikeService;
     private final PostRepository postRepository;
     private final UserService userService;
+    private final CommentLikeService commentLikeService;
+    private final PostService postService;
     private Pageable pageable;
 
     @Transactional
-    public void saveComment(Comment comment, Long postId, HttpServletRequest request, HttpServletResponse response){
-        Optional<Post> findPost = postRepository.findById(postId);
-        if(findPost.isEmpty()){
-            throw new RuntimeException("오류 발생");
-        }
-        Post post = findPost.get();
-        User user = userService.getUser(request, response);
+    public void saveComment(Comment comment, Long postId, HttpSession session){
+        Post post = postService.findPost(postId);
+        User user = userService.getUser(session);
 
         comment.setComment(user,post);
         comment.setCreatedTime(LocalDateTime.now());
@@ -82,26 +79,15 @@ public class CommentService {
 
     @Transactional
     public Comment updateComment(Comment comment, Long commentId){
-        Optional<Comment> findComment = commentRepository.findById(commentId);
-        if(findComment.isEmpty()){
-            throw new RuntimeException();
-        }
-        Comment updateComment = findComment.get();
+        Comment findComment = findComment(commentId);
+        Comment updateComment = findComment;
         updateComment.setContent(comment.getContent());
         return updateComment;
     }
 
     @Transactional
     public void deleteComment(Long commentId){
-        Optional<Comment> findComment = commentRepository.findById(commentId);
-        if(findComment.isEmpty()){
-            throw new RuntimeException();
-        }
-        Comment comment = findComment.get();
-
-        commentLikeService.deleteByComment(comment);
-
+        Comment comment = findComment(commentId);
         comment.deleteComment();
-        commentRepository.delete(comment);
     }
 }

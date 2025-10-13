@@ -1,6 +1,7 @@
 package com.limhs.movie_project.domain.post;
 
 import com.limhs.movie_project.domain.like.Like;
+import com.limhs.movie_project.domain.mappedSuperClass.BaseTimeEntity;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.comment.Comment;
 import com.limhs.movie_project.domain.movie.Movie;
@@ -15,26 +16,23 @@ import java.util.List;
 
 @Entity
 @Getter @Setter
-public class Post {
+public class Post extends BaseTimeEntity {
     public Post() {
     }
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
     private Movie movie;
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @NotBlank(message = "제목은 필수입니다")
     @Size(max = 100, message = "제목은 100자를 넘어갈 수 없습니다.")
@@ -44,8 +42,6 @@ public class Post {
     @Size(max = 2000, message = "본문 내용은 2000자를 넘을 수 없습니다.")
     @Column(columnDefinition = "TEXT")
     private String content;
-
-    private LocalDateTime createdTime;
 
     private Long viewCount = 0L;
 

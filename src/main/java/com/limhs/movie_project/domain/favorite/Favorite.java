@@ -1,5 +1,7 @@
 package com.limhs.movie_project.domain.favorite;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
+import com.limhs.movie_project.domain.mappedSuperClass.BaseEntity;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
 import jakarta.persistence.*;
@@ -8,19 +10,16 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter
-public class Favorite {
+public class Favorite extends BaseEntity {
 
     public Favorite() {
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

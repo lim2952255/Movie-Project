@@ -1,7 +1,6 @@
 package com.limhs.movie_project.controller.movie;
 
 import com.limhs.movie_project.domain.post.PostDTO;
-import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.domain.movie.MovieDetailDTO;
@@ -87,7 +86,7 @@ public class MovieController {
     }
 
     @GetMapping("/{movieId}/{pageNumber}")
-    public String movieDetail(@PathVariable String movieId, @PathVariable String pageNumber,HttpSession httpSession, Model model){
+    public String movieDetail(@PathVariable String movieId, @PathVariable String pageNumber,HttpSession session, Model model){
         int movieNum = Integer.parseInt(movieId);
         Movie movie = movieService.findByMovieId(movieNum);
 
@@ -96,10 +95,7 @@ public class MovieController {
 
         model.addAttribute("movie",movieDetailDTO);
 
-        Object findUser = httpSession.getAttribute("user");
-        User getUser = (User) findUser;
-
-        boolean favorite = favoriteService.isFavorite(getUser, movie);
+        boolean favorite = favoriteService.isFavorite(session, movie);
         model.addAttribute("isFavorite",favorite);
 
         int number = Integer.parseInt(pageNumber) - 1   ;

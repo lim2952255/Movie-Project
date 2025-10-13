@@ -1,5 +1,6 @@
 package com.limhs.movie_project.domain.comment;
 
+import com.limhs.movie_project.domain.mappedSuperClass.BaseTimeEntity;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.like.CommentLike;
 import com.limhs.movie_project.domain.post.Post;
@@ -16,21 +17,17 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Comment {
+public class Comment extends BaseTimeEntity {
     public Comment() {
     }
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentLike> commentLikes = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -38,8 +35,6 @@ public class Comment {
     @Size(max = 200, message = "댓글 내용은 200자를 넘을 수 없습니다.")
     @Column(columnDefinition = "TEXT")
     private String content;
-
-    private LocalDateTime createdTime;
 
     public void setComment(User user, Post post){
         if(user != null && this.user != user){
