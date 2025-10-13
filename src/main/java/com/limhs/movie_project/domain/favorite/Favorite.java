@@ -15,12 +15,12 @@ public class Favorite extends BaseEntity {
     public Favorite() {
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public void setFavorite(Movie movie, User user){

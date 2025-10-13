@@ -41,7 +41,7 @@ public class MovieSchedule {
     }
 
     //매일 09시에 반복적으로 로직 수행
-    @Scheduled(cron = "0 14 20 * * *")
+    @Scheduled(cron = "0 57 9 * * *")
     @Transactional
     public void movieListUpdate() throws IOException, InterruptedException {
         log.info("Genre Update start");

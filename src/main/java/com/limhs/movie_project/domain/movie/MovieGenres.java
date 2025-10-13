@@ -12,12 +12,12 @@ public class MovieGenres extends BaseEntity {
     public MovieGenres() {
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genre_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "genre_id", nullable = false)
     private Genre genre;
 
     public void setMovieGenres(Movie movie, Genre genre){

@@ -13,12 +13,12 @@ public class CommentLike extends BaseEntity {
     public CommentLike() {
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;
 
     public void setCommentLike(User user, Comment comment){
