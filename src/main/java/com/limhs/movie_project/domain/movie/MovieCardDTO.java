@@ -6,12 +6,12 @@ import lombok.Setter;
 @Getter @Setter
 public class MovieCardDTO {
 
-    public MovieCardDTO(Movie movie, String tmdbImageBaseUrl) {
+    public MovieCardDTO(Movie movie) {
         adult = movie.isAdult();
         isPopular = movie.isPopular();
         isPlaying = movie.isPlaying();
         movieId = movie.getMovieId();
-        posterPath = tmdbImageBaseUrl + movie.getPosterPath();
+        posterPath =movie.getPosterPath();
         title = movie.getTitle();
     }
 

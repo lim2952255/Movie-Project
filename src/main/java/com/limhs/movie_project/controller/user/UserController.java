@@ -1,7 +1,7 @@
 package com.limhs.movie_project.controller.user;
 
-import com.limhs.movie_project.domain.post.PostDTO;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
+import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.service.favorite.FavoriteService;
 import com.limhs.movie_project.service.post.PostService;
 import jakarta.servlet.http.HttpSession;
@@ -76,8 +76,8 @@ public class UserController {
     public String posts(@PathVariable String pageNumber, HttpSession session, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<PostDTO> getPosts = postService.getWritePosts(session, number);
-        List<PostDTO> posts = getPosts.getContent();
+        Page<Post> getPosts = postService.getWritePosts(session, number);
+        List<Post> posts = getPosts.getContent();
 
         model.addAttribute("posts", posts);
         model.addAttribute("totalPages", getPosts.getTotalPages());
@@ -90,8 +90,8 @@ public class UserController {
     public String likes(@PathVariable String pageNumber, HttpSession session, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<PostDTO> getPosts = postService.getLikesPosts(session, number);
-        List<PostDTO> posts = getPosts.getContent();
+        Page<Post> getPosts = postService.getLikesPosts(session, number);
+        List<Post> posts = getPosts.getContent();
 
         model.addAttribute("posts", posts);
         model.addAttribute("totalPages", getPosts.getTotalPages());

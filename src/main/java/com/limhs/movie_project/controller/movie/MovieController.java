@@ -1,9 +1,9 @@
 package com.limhs.movie_project.controller.movie;
 
-import com.limhs.movie_project.domain.post.PostDTO;
+import com.limhs.movie_project.domain.genre.Genre;
 import com.limhs.movie_project.domain.movie.Movie;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
-import com.limhs.movie_project.domain.movie.MovieDetailDTO;
+import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.service.favorite.FavoriteService;
 import com.limhs.movie_project.service.movie.MovieService;
 import com.limhs.movie_project.service.post.PostService;
@@ -90,18 +90,18 @@ public class MovieController {
         int movieNum = Integer.parseInt(movieId);
         Movie movie = movieService.findByMovieId(movieNum);
 
-        MovieDetailDTO movieDetailDTO = movieService.mappingMovieToMovieDetail(movie);
-        movieService.getGenresFromMovieGenres(movieDetailDTO);
+        List<Genre> genres = movieService.getGenresFromMovieGenres(movie);
 
-        model.addAttribute("movie",movieDetailDTO);
+        model.addAttribute("movie",movie);
 
         boolean favorite = favoriteService.isFavorite(session, movie);
         model.addAttribute("isFavorite",favorite);
 
         int number = Integer.parseInt(pageNumber) - 1   ;
-        Page<PostDTO> post = postService.findPosts(number, movie);
+        Page<Post> post = postService.findPosts(number, movie);
 
-        List<PostDTO> posts = post.getContent();
+        List<Post> posts = post.getContent();
+        model.addAttribute("genres", genres);
         model.addAttribute("posts",posts);
         model.addAttribute("totalPages", post.getTotalPages());
         model.addAttribute("currentPage", number + 1);

@@ -2,6 +2,7 @@ package com.limhs.movie_project.domain.movie;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.limhs.movie_project.domain.converter.MovieUrlConverter;
 import com.limhs.movie_project.domain.favorite.Favorite;
 import com.limhs.movie_project.domain.mappedSuperClass.BaseEntity;
 import com.limhs.movie_project.domain.post.Post;
@@ -50,6 +51,7 @@ public class Movie extends BaseEntity {
     private Double popularity;
 
     @JsonProperty("poster_path")
+    @Convert(converter = MovieUrlConverter.class)
     private String posterPath;
 
     @JsonProperty("release_date")

@@ -1,8 +1,7 @@
 package com.limhs.movie_project.controller.post;
 
-import com.limhs.movie_project.domain.movie.Movie;
+import com.limhs.movie_project.domain.comment.Comment;
 import com.limhs.movie_project.domain.user.User;
-import com.limhs.movie_project.domain.comment.CommentDTO;
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.service.comment.CommentService;
 import com.limhs.movie_project.service.like.LikeService;
@@ -103,10 +102,10 @@ public class PostController {
 
         boolean like = likeService.userLikesPost(post, user);
 
-        Page<CommentDTO> findComments = commentService.findComment(id, number);
-        List<CommentDTO> commentList = findComments.getContent();
+        Page<Comment> findComments = commentService.findComment(id, number);
+        List<Comment> commentList = findComments.getContent();
 
-        List<CommentDTO> comments = commentService.userLikesComment(commentList, user);
+        List<Comment> comments = commentService.userLikesComment(commentList, user);
 
         model.addAttribute("post",post);
         model.addAttribute("userLike",like);

@@ -142,7 +142,7 @@
         <h3 th:text="'상영중 여부: ' + (${movie.isPlaying} ? '상영중' : '미상영')">상영중 여부</h3>
         <h3 th:text="'인기 영화 여부: ' + (${movie.isPopular} ? '인기' : '보통')">인기 여부</h3>
 
-        <div th:each="genre : ${movie.genres}">
+        <div th:each="genre : ${genres}">
             <p>장르 : <span th:text="${genre.genreName}"></span></p>
         </div>
         <div th:if="${isFavorite}">

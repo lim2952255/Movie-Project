@@ -113,7 +113,8 @@
             <p th:text="|영화 제목: ${post.movie.title}|">영화 제목</p>
             <a th:href="@{/movie/{movieId}(movieId = ${post.movie.movieId})}">영화 페이지 이동하기</a>
             작성자: <span th:text="${post.user.userId}"></span>
-            작성일/수정일: <span th:text="${#temporals.format(post.createdTime, 'yyyy-MM-dd HH:mm')}"></span> |
+            작성일: <span th:text="${#temporals.format(post.createdTime, 'yyyy-MM-dd HH:mm')}"></span> |
+            수정일: <span th:text="${#temporals.format(post.updatedTime, 'yyyy-MM-dd HH:mm')}"></span> |
             조회수: <span th:text="${post.viewCount}"></span>
         </div>
     </div>

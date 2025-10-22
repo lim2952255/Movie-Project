@@ -1,7 +1,6 @@
 package com.limhs.movie_project.service.post;
 
 import com.limhs.movie_project.domain.post.Post;
-import com.limhs.movie_project.domain.post.PostDTO;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
 import com.limhs.movie_project.repository.post.PostRepository;
@@ -34,7 +33,6 @@ public class PostService {
         User user = userService.getUser(session);
 
         post.setPost(movie,user);
-        post.setCreatedTime(LocalDateTime.now());
 
         postRepository.save(post);
         return post;
@@ -47,19 +45,26 @@ public class PostService {
 
         post.setTitle(updatedPost.getTitle());
         post.setContent(updatedPost.getContent());
+        post.setUpdatedTime(LocalDateTime.now());
 
         return post;
     }
 
     @Transactional
     public Post findPost(Long postId){
-        Optional<Post> findPost = postRepository.findById(postId);
-        if(findPost.isEmpty()){
-            throw new RuntimeException();
+        try{
+            Optional<Post> findPost = postRepository.findByIdWithLock(postId);
+
+            if(findPost.isEmpty()){
+                throw new RuntimeException();
+            }
+            Post post = findPost.get();
+
+            post.setViewCount(post.getViewCount() + 1);
+            return post;
+        } catch (Exception e){
+            throw new RuntimeException("락 타임아웃", e);
         }
-        Post post = findPost.get();
-        post.setViewCount(post.getViewCount() + 1); //조회수 증가
-        return post;
     }
 
     @Transactional
@@ -69,38 +74,36 @@ public class PostService {
     }
 
     @Transactional
-    public Page<PostDTO> findPosts(int pageNumber, Movie movie) {
+    public Page<Post> findPosts(int pageNumber, Movie movie) {
         //Pageable
         pageable = PageRequest.of(pageNumber, 10);
 
         Page<Post> posts = postRepository.findByMovie_MovieId(movie.getMovieId(), pageable);
 
-        return posts.map(post -> new PostDTO(post));
+        return posts;
     }
 
     @Transactional
-    public Page<PostDTO> getWritePosts(HttpSession session, int pageNumber) {
+    public Page<Post> getWritePosts(HttpSession session, int pageNumber) {
         //Pageable
         pageable = PageRequest.of(pageNumber, 10);
 
         User user = userService.getUser(session);
 
-        Page<Post> getWritePosts = postRepository.findByUser_UserId(user.getUserId(), pageable);
-        Page<PostDTO> posts = getWritePosts.map(post -> new PostDTO(post));
+        Page<Post> posts = postRepository.findByUser_UserId(user.getUserId(), pageable);
 
         return posts;
 
     }
 
     @Transactional
-    public Page<PostDTO> getLikesPosts(HttpSession session, int pageNumber) {
+    public Page<Post> getLikesPosts(HttpSession session, int pageNumber) {
         //Pageable
         pageable = PageRequest.of(pageNumber, 10);
 
         User user = userService.getUser(session);
 
-        Page<Post> getlikePosts = postRepository.findByLikes_User(user, pageable);
-        Page<PostDTO> posts = getlikePosts.map(post -> new PostDTO(post));
+        Page<Post> posts = postRepository.findByLikes_User(user, pageable);
 
         return posts;
     }

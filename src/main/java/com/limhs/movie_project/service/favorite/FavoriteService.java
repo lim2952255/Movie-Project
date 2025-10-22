@@ -77,7 +77,7 @@ public class FavoriteService {
         User user = userService.getUser(session);
 
         Page<Favorite> findFavorites = favoriteRepository.findByUserId(user.getId(), pageable);
-        Page<MovieCardDTO> movieCards = findFavorites.map(favorite -> new MovieCardDTO(favorite.getMovie(), tmdbImageBaseUrl));
+        Page<MovieCardDTO> movieCards = findFavorites.map(favorite -> new MovieCardDTO(favorite.getMovie()));
         return movieCards;
     }
 

@@ -10,6 +10,7 @@
             <div class="comment-meta">
                 작성자: <span th:text="${comment.user.userId}"></span> |
                 작성일: <span th:text="${#temporals.format(comment.createdTime, 'yyyy-MM-dd HH:mm')}"></span>
+                수정일: <span th:text="${#temporals.format(comment.updatedTime, 'yyyy-MM-dd HH:mm')}"></span> |
                 좋아요 수: <span th:text="${comment.commentLikeCount}"></span>
                 <div th:if="!${comment.userLike}">
                     <a th:href="@{/commentLike/{postId}/{commentId}(postId = ${post.id},commentId = ${comment.id})}"> 좋아요 누르기</a>

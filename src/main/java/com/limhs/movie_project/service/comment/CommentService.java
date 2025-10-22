@@ -2,7 +2,6 @@ package com.limhs.movie_project.service.comment;
 
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.comment.Comment;
-import com.limhs.movie_project.domain.comment.CommentDTO;
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.repository.comment.CommentRepository;
 import com.limhs.movie_project.repository.post.PostRepository;
@@ -41,31 +40,29 @@ public class CommentService {
         User user = userService.getUser(session);
 
         comment.setComment(user,post);
-        comment.setCreatedTime(LocalDateTime.now());
         commentRepository.save(comment);
     }
 
     @Transactional
-    public Page<CommentDTO> findComment(Long postId, int pageNumber){
+    public Page<Comment> findComment(Long postId, int pageNumber){
         //Pageable
         pageable = PageRequest.of(pageNumber, 10);
 
-        Page<Comment> findComments = commentRepository.findByPostId(postId, pageable);
-        Page<CommentDTO> comments = findComments.map(comment -> new CommentDTO(comment));
+        Page<Comment> comments = commentRepository.findByPostId(postId, pageable);
 
         return comments;
     }
 
     @Transactional
-    public List<CommentDTO> userLikesComment(List<CommentDTO> comments, User user){
+    public List<Comment> userLikesComment(List<Comment> comments, User user){
 
-        List<CommentDTO> commentDTOList = new ArrayList<>();
-        for (CommentDTO comment : comments) {
+        List<Comment> commentList = new ArrayList<>();
+        for (Comment comment : comments) {
             boolean userLikes = commentLikeService.userLikesComment(user, comment);
             comment.setUserLike(userLikes);
-            commentDTOList.add(comment);
+            commentList.add(comment);
         }
-        return commentDTOList;
+        return commentList;
     }
 
     @Transactional
@@ -82,6 +79,8 @@ public class CommentService {
         Comment findComment = findComment(commentId);
         Comment updateComment = findComment;
         updateComment.setContent(comment.getContent());
+        updateComment.setUpdatedTime(LocalDateTime.now());
+
         return updateComment;
     }
 

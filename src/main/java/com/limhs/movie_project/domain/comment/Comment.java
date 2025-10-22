@@ -36,6 +36,9 @@ public class Comment extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Transient
+    private boolean userLike;
+
     public void setComment(User user, Post post){
         if(user != null && this.user != user){
             user.getComments().remove(this);
@@ -67,4 +70,5 @@ public class Comment extends BaseTimeEntity {
     public int getCommentLikeCount(){
         return commentLikes != null ? commentLikes.size() : 0;
     }
+
 }

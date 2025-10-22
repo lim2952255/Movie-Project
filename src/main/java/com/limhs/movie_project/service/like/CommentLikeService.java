@@ -2,7 +2,6 @@ package com.limhs.movie_project.service.like;
 
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.comment.Comment;
-import com.limhs.movie_project.domain.comment.CommentDTO;
 import com.limhs.movie_project.domain.like.CommentLike;
 import com.limhs.movie_project.repository.comment.CommentRepository;
 import com.limhs.movie_project.repository.like.CommentLikeRepository;
@@ -63,8 +62,8 @@ public class CommentLikeService {
         return findCommentLike.get();
     }
     @Transactional
-    public boolean userLikesComment(User user, CommentDTO commentDTO){
-        Optional<CommentLike> findCommentLike = commentLikeRepository.findByCommentIdAndUser(commentDTO.getId(), user);
+    public boolean userLikesComment(User user, Comment comment){
+        Optional<CommentLike> findCommentLike = commentLikeRepository.findByCommentIdAndUser(comment.getId(), user);
         if(findCommentLike.isEmpty()){
             return false;
         }

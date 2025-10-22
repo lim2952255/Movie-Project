@@ -1,16 +1,17 @@
 package com.limhs.movie_project.service.movie;
 
+import com.limhs.movie_project.domain.genre.Genre;
 import com.limhs.movie_project.domain.movie.*;
 import com.limhs.movie_project.repository.movie.GenreRepository;
 import com.limhs.movie_project.repository.movie.MovieGenresRepository;
 import com.limhs.movie_project.repository.movie.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,9 +21,6 @@ public class MovieService {
     private final GenreRepository genreRepository;
     private final MovieGenresRepository movieGenresRepository;
     private Pageable pageable;
-
-    @Value("${tmdb.image.base.url}")
-    private String tmdbImageBaseUrl;
 
     @Autowired
     public MovieService(MovieRepository movieRepository, GenreRepository genreRepository, MovieGenresRepository movieGenresRepository) {
@@ -46,7 +44,7 @@ public class MovieService {
 
         Page<Movie> popularMovies = movieRepository.findByIsPopular(true, pageable);
 
-        Page<MovieCardDTO> movieCards = popularMovies.map(movie -> new MovieCardDTO(movie,tmdbImageBaseUrl));
+        Page<MovieCardDTO> movieCards = popularMovies.map(movie -> new MovieCardDTO(movie));
         return movieCards;
     }
 
@@ -56,7 +54,7 @@ public class MovieService {
 
         Page<Movie> playingMovies = movieRepository.findByIsPlaying(true, pageable);
 
-        Page<MovieCardDTO> movieCards = playingMovies.map(movie -> new MovieCardDTO(movie,tmdbImageBaseUrl));
+        Page<MovieCardDTO> movieCards = playingMovies.map(movie -> new MovieCardDTO(movie));
 
         return movieCards;
     }
@@ -67,26 +65,23 @@ public class MovieService {
 
         Page<Movie> otherMovies = movieRepository.findByIsPopularAndIsPlaying(false, false, pageable);
 
-        Page<MovieCardDTO> movieCards = otherMovies.map(movie -> new MovieCardDTO(movie,tmdbImageBaseUrl));
+        Page<MovieCardDTO> movieCards = otherMovies.map(movie -> new MovieCardDTO(movie));
 
         return movieCards;
     }
 
     public MovieCardDTO mappingMovieToMovieCard(Movie movie){
-        MovieCardDTO movieCardDTO = new MovieCardDTO(movie, tmdbImageBaseUrl);
+        MovieCardDTO movieCardDTO = new MovieCardDTO(movie);
         return movieCardDTO;
     }
 
-    public MovieDetailDTO mappingMovieToMovieDetail(Movie movie){
-        MovieDetailDTO movieDetailDTO = new MovieDetailDTO(movie, tmdbImageBaseUrl);
-        return movieDetailDTO;
-    }
-
-    public void getGenresFromMovieGenres(MovieDetailDTO movieDetailDTO){
-        List<MovieGenres> movieGenres = movieDetailDTO.getMovieGenres();
+    public List<Genre> getGenresFromMovieGenres(Movie movie){
+        List<Genre> genres = new ArrayList<>();
+        List<MovieGenres> movieGenres = movie.getMovieGenres();
         for (MovieGenres movieGenre : movieGenres) {
-            movieDetailDTO.getGenres().add(movieGenre.getGenre());
+            genres.add(movieGenre.getGenre());
         }
+        return  genres;
     }
 
 }
