@@ -63,11 +63,11 @@
     </style>
 </head>
 <body>
-<div th:replace="/layout/header :: header"></div>
+<div th:replace="~{/layout/header :: header}"></div>
 <h1>기타 영화 목록</h1>
 <a href="/home">홈으로 이동</a>
 
-<div th:replace="/layout/movieList :: movieList"></div>
+<div th:replace="~{/layout/movieList :: movieList}"></div>
 
 <div class="pagination-container">
     <a th:href="@{/movie/otherList/{pageNumber}(pageNumber=${currentPage - 1})}"

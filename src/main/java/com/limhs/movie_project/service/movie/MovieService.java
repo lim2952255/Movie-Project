@@ -10,10 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MovieService {
@@ -29,15 +29,17 @@ public class MovieService {
         this.movieGenresRepository = movieGenresRepository;
     }
 
-    public Movie findByMovieId(int movieId){
-        Optional<Movie> findMovie = movieRepository.findByMovieId(movieId);
-        if(findMovie.isEmpty()){
-            throw new RuntimeException("해당 영화를 찾을 수 없습니다");
-        }
-
-        return findMovie.get();
+    @Transactional(readOnly = true)
+    public Movie findByMovieIdForRead(int movieId){
+        return movieRepository.findByMovieIdForRead(movieId).orElse(null);
     }
 
+    @Transactional
+    public Movie findByMovieIdForUpdate(int movieId){
+        return movieRepository.findByMovieIdForUpdate(movieId).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
     public Page<MovieCardDTO> findPoplar(int pageNumber){
         //Pageable
         pageable = PageRequest.of(pageNumber, 20);
@@ -48,6 +50,7 @@ public class MovieService {
         return movieCards;
     }
 
+    @Transactional(readOnly = true)
     public Page<MovieCardDTO> findPlaying(int pageNumber){
         //Pageable
         pageable = PageRequest.of(pageNumber, 20);
@@ -59,6 +62,7 @@ public class MovieService {
         return movieCards;
     }
 
+    @Transactional(readOnly = true)
     public Page<MovieCardDTO> findOther(int pageNumber){
         //Pageable
         pageable = PageRequest.of(pageNumber, 20);
@@ -70,11 +74,7 @@ public class MovieService {
         return movieCards;
     }
 
-    public MovieCardDTO mappingMovieToMovieCard(Movie movie){
-        MovieCardDTO movieCardDTO = new MovieCardDTO(movie);
-        return movieCardDTO;
-    }
-
+    @Transactional(readOnly = true)
     public List<Genre> getGenresFromMovieGenres(Movie movie){
         List<Genre> genres = new ArrayList<>();
         List<MovieGenres> movieGenres = movie.getMovieGenres();
@@ -83,5 +83,4 @@ public class MovieService {
         }
         return  genres;
     }
-
 }

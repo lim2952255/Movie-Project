@@ -28,21 +28,18 @@ public class FavoriteService {
     private final UserService userService;
     private final MovieService movieService;
 
-    @Value("${tmdb.image.base.url}")
-    private String tmdbImageBaseUrl;
-
     @Transactional
     public void setFavorites(int movieId,HttpSession session){
-        Optional<Movie> findMovie = movieRepository.findByMovieId(movieId);
+        Optional<Movie> findMovie = movieRepository.findByMovieIdForUpdate(movieId);
         if(findMovie.isEmpty()){
             throw new RuntimeException("해당 영화가 존재하지 않습니다.");
         }
         Movie movie = findMovie.get();
 
-        User user = userService.getUser(session);
+        User user = userService.getUserForUpdate(session);
 
-        Optional<Favorite> existFavorite = favoriteRepository.findByUserAndMovie(user, movie); // 중복 체크
-        if(existFavorite.isPresent()){
+        Favorite existFavorite = findFavoriteForRead(user,movie);
+        if(existFavorite != null){
             return;
         }
 
@@ -53,37 +50,38 @@ public class FavoriteService {
 
     @Transactional
     public void unsetFavorites(int movieId, HttpSession session){
-        Movie movie = movieService.findByMovieId(movieId);
-        User user = userService.getUser(session);
+        Movie movie = movieService.findByMovieIdForUpdate(movieId);
+        User user = userService.getUserForUpdate(session);
 
-        Favorite favorite = findFavorite(user, movie);
+        Favorite favorite = findFavoriteForUpdate(user, movie);
         favorite.unsetFavorite();
 
     }
 
     @Transactional
-    public Favorite findFavorite(User user, Movie movie){
-        Optional<Favorite> findFavorite = favoriteRepository.findByUserAndMovie(user, movie);
-        if(findFavorite.isEmpty()){
-            throw new RuntimeException("해당 엔티티를 찾을 수 없습니다");
-        }
-        return findFavorite.get();
+    public Favorite findFavoriteForRead(User user, Movie movie){
+        return favoriteRepository.findByUserAndMovieForRead(user,movie).orElse(null);
     }
 
     @Transactional
+    public Favorite findFavoriteForUpdate(User user, Movie movie){
+        return favoriteRepository.findByUserAndMovieForUpdate(user,movie).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
     public Page<MovieCardDTO> getFavoriteMovie(HttpSession session, int pageNumber){
         Pageable pageable = PageRequest.of(pageNumber,20);
 
-        User user = userService.getUser(session);
+        User user = userService.getUserForRead(session);
 
         Page<Favorite> findFavorites = favoriteRepository.findByUserId(user.getId(), pageable);
         Page<MovieCardDTO> movieCards = findFavorites.map(favorite -> new MovieCardDTO(favorite.getMovie()));
         return movieCards;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean isFavorite(HttpSession session, Movie movie){
-        User user = userService.getUser(session);
+        User user = userService.getUserForRead(session);
         List<Favorite> favorites = user.getFavorites();
 
         boolean isFavorites = false;

@@ -36,14 +36,14 @@ public class CommentService {
 
     @Transactional
     public void saveComment(Comment comment, Long postId, HttpSession session){
-        Post post = postService.findPost(postId);
-        User user = userService.getUser(session);
+        Post post = postService.findPostForUpdate(postId);
+        User user = userService.getUserForUpdate(session);
 
         comment.setComment(user,post);
         commentRepository.save(comment);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<Comment> findComment(Long postId, int pageNumber){
         //Pageable
         pageable = PageRequest.of(pageNumber, 10);
@@ -65,18 +65,19 @@ public class CommentService {
         return commentList;
     }
 
+    @Transactional(readOnly = true)
+    public Comment findCommentForRead(Long commentId){
+        return commentRepository.findCommentForRead(commentId).orElse(null);
+    }
+
     @Transactional
-    public Comment findComment(Long commentId){
-        Optional<Comment> findComment = commentRepository.findById(commentId);
-        if(findComment.isEmpty()){
-            throw new RuntimeException();
-        }
-        return findComment.get();
+    public Comment findCommentForUpdate(Long commentId){
+        return commentRepository.findCommentForUpdate(commentId).orElse(null);
     }
 
     @Transactional
     public Comment updateComment(Comment comment, Long commentId){
-        Comment findComment = findComment(commentId);
+        Comment findComment = findCommentForUpdate(commentId);
         Comment updateComment = findComment;
         updateComment.setContent(comment.getContent());
         updateComment.setUpdatedTime(LocalDateTime.now());
@@ -86,7 +87,7 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long commentId){
-        Comment comment = findComment(commentId);
+        Comment comment = findCommentForUpdate(commentId);
         comment.deleteComment();
     }
 }

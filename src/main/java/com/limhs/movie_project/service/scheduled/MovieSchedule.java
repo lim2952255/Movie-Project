@@ -41,7 +41,7 @@ public class MovieSchedule {
     }
 
     //매일 09시에 반복적으로 로직 수행
-    @Scheduled(cron = "0 00 22 * * *")
+    @Scheduled(cron = "0 23 21 * * *")
     @Transactional
     public void movieListUpdate() throws IOException, InterruptedException {
         log.info("Genre Update start");
@@ -56,12 +56,6 @@ public class MovieSchedule {
         getPlayingMovie();
 
         log.info("Update end");
-//
-//        List<Movie> unused = movieRepository.findAllByIsPlayingFalseAndIsPopularFalse();
-//        for (Movie m : unused) {
-//            movieRepository.delete(m);
-//        }
-
     }
 
     @Transactional
@@ -73,7 +67,7 @@ public class MovieSchedule {
         request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.themoviedb.org/3/genre/movie/list?language=ko"))
                 .header("accept", "application/json")
-                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiZTIxNjc4ZDg5YzM2MWRmNDE3ODNmOTQ5ODM3NjQ3NyIsIm5iZiI6MTc1NzQ2NTI5MS45Njg5OTk5LCJzdWIiOiI2OGMwY2FjYmY0ZmM3NDRlNTE5OGM2NmUiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.hMpJWMjbeV_L14WlGEildsyP_PmQPDknj3M8FP7s02o")
+                .header("Authorization", "Bearer " +tmdbApiKey)
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
         response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
@@ -108,7 +102,7 @@ public class MovieSchedule {
 
             for (Movie movie : results) {
                 movie.setPopular(true);
-                Optional<Movie> findMovie = movieRepository.findByMovieId(movie.getMovieId());
+                Optional<Movie> findMovie = movieRepository.findByMovieIdForUpdate(movie.getMovieId());
                 if(findMovie.isEmpty()){
                     movieRepository.save(movie);
                     mappingGenreWithMovie(movie);
@@ -134,7 +128,7 @@ public class MovieSchedule {
             request = HttpRequest.newBuilder()
                     .uri(URI.create("https://api.themoviedb.org/3/movie/now_playing?language=ko&page=" + i + "&region=KR"))
                     .header("accept", "application/json")
-                    .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiZTIxNjc4ZDg5YzM2MWRmNDE3ODNmOTQ5ODM3NjQ3NyIsIm5iZiI6MTc1NzQ2NTI5MS45Njg5OTk5LCJzdWIiOiI2OGMwY2FjYmY0ZmM3NDRlNTE5OGM2NmUiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.hMpJWMjbeV_L14WlGEildsyP_PmQPDknj3M8FP7s02o")
+                    .header("Authorization", "Bearer " + tmdbApiKey)
                     .method("GET", HttpRequest.BodyPublishers.noBody())
                     .build();
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
@@ -144,7 +138,7 @@ public class MovieSchedule {
 
             for (Movie movie : results) {
                 movie.setPlaying(true);
-                Optional<Movie> findMovie = movieRepository.findByMovieId(movie.getMovieId());
+                Optional<Movie> findMovie = movieRepository.findByMovieIdForUpdate(movie.getMovieId());
                 if(findMovie.isEmpty()){
                     movieRepository.save(movie);
                     mappingGenreWithMovie(movie);

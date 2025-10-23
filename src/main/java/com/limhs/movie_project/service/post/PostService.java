@@ -29,8 +29,8 @@ public class PostService {
     public Post savePost(Post post, String id, HttpSession session){
         int movieId = Integer.parseInt(id);
 
-        Movie movie = movieService.findByMovieId(movieId);
-        User user = userService.getUser(session);
+        Movie movie = movieService.findByMovieIdForUpdate(movieId);
+        User user = userService.getUserForUpdate(session);
 
         post.setPost(movie,user);
 
@@ -41,7 +41,7 @@ public class PostService {
 
     @Transactional
     public Post updatePost(Post updatedPost, Long id){
-        Post post = postRepository.findById(id).get();
+        Post post = findPostForUpdate(id);
 
         post.setTitle(updatedPost.getTitle());
         post.setContent(updatedPost.getContent());
@@ -51,7 +51,7 @@ public class PostService {
     }
 
     @Transactional
-    public Post findPost(Long postId){
+    public Post viewPost(Long postId){
         try{
             Optional<Post> findPost = postRepository.findByIdWithLock(postId);
 
@@ -67,13 +67,21 @@ public class PostService {
         }
     }
 
-    @Transactional
-    public void deletePost(Long postId){
-        Post post = findPost(postId);
-        post.deletePost();
+    public Post findPostForRead(Long postId){
+        return postRepository.findByIdForRead(postId).orElse(null);
+    }
+
+    public Post findPostForUpdate(Long postId){
+        return postRepository.findByIdForUpdate(postId).orElse(null);
     }
 
     @Transactional
+    public void deletePost(Long postId){
+        Post post = findPostForUpdate(postId);
+        post.deletePost();
+    }
+
+    @Transactional(readOnly = true)
     public Page<Post> findPosts(int pageNumber, Movie movie) {
         //Pageable
         pageable = PageRequest.of(pageNumber, 10);
@@ -83,12 +91,12 @@ public class PostService {
         return posts;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<Post> getWritePosts(HttpSession session, int pageNumber) {
         //Pageable
         pageable = PageRequest.of(pageNumber, 10);
 
-        User user = userService.getUser(session);
+        User user = userService.getUserForRead(session);
 
         Page<Post> posts = postRepository.findByUser_UserId(user.getUserId(), pageable);
 
@@ -96,12 +104,12 @@ public class PostService {
 
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<Post> getLikesPosts(HttpSession session, int pageNumber) {
         //Pageable
         pageable = PageRequest.of(pageNumber, 10);
 
-        User user = userService.getUser(session);
+        User user = userService.getUserForRead(session);
 
         Page<Post> posts = postRepository.findByLikes_User(user, pageable);
 

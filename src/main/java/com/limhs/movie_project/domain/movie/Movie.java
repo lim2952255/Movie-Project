@@ -7,8 +7,9 @@ import com.limhs.movie_project.domain.favorite.Favorite;
 import com.limhs.movie_project.domain.mappedSuperClass.BaseEntity;
 import com.limhs.movie_project.domain.post.Post;
 import jakarta.persistence.*;
-import lombok.Getter;
+        import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AttributeOverride(name = "id", column = @Column(name = "default_id"))
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Movie extends BaseEntity {
     public Movie() {
     }
@@ -31,6 +33,7 @@ public class Movie extends BaseEntity {
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieGenres> movieGenres = new ArrayList<>();
 
@@ -58,5 +61,9 @@ public class Movie extends BaseEntity {
     private String releaseDate;
 
     private String title;
+
+    @Version
+    private Long version;
+
 
 }

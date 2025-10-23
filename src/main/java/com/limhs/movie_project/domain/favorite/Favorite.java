@@ -46,14 +46,7 @@ public class Favorite extends BaseEntity {
     }
 
     public void unsetFavorite(){
-        if(movie != null && movie.getFavorites().contains(this)){
-            movie.getFavorites().remove(this);
-        }
-        this.movie = null;
-
-        if(user != null && user.getFavorites().contains(this)){
-            user.getFavorites().remove(this);
-        }
-        this.user = null;
+        movie.getFavorites().remove(this);
+        user.getFavorites().remove(this);
     }
 }

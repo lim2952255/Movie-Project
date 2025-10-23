@@ -1,0 +1,48 @@
+<ehcache>
+<!-- Movie 엔티티 캐시: 1시간 -->
+
+    <defaultCache
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="1200"
+            timeToLiveSeconds="1200"
+    />
+    <cache alias="movieCache">
+        <expiry>
+            <ttl unit="minutes">60</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">1000</heap>
+        </resources>
+    </cache>
+
+    <!-- User 엔티티 캐시: 2시간 -->
+    <cache alias="userCache">
+        <expiry>
+            <ttl unit="hours">2</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">500</heap>
+        </resources>
+    </cache>
+
+    <!-- Genre 엔티티 캐시: 6시간 -->
+    <cache alias="genreCache">
+        <expiry>
+            <ttl unit="hours">6</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">200</heap>
+        </resources>
+    </cache>
+
+    <!-- MovieGenres 엔티티 캐시: 6시간 -->
+    <cache alias="movieGenresCache">
+        <expiry>
+            <ttl unit="hours">6</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">1000</heap>
+        </resources>
+    </cache>
+</ehcache>

@@ -62,9 +62,9 @@
     </style>
 </head>
 <body>
-<div th:replace="/layout/header :: header"></div>
+<div th:replace="~{/layout/header :: header}"></div>
 <p th:text="|찜한 영화목록|">찜 목록</p>
-<div th:replace="/layout/movieList :: movieList"></div>
+<div th:replace="~{/layout/movieList :: movieList}"></div>
 <div class="pagination-container">
     <a th:href="@{/mypage/favorites/{pageNumber}(pageNumber=${currentPage - 1})}"
        th:if="${currentPage > 1}">이전</a>

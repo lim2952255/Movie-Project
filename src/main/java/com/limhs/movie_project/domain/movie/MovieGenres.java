@@ -5,9 +5,14 @@ import com.limhs.movie_project.domain.mappedSuperClass.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_ONLY;
 
 @Entity
 @Getter @Setter
+@Cache(usage = READ_ONLY)
 public class MovieGenres extends BaseEntity {
     public MovieGenres() {
     }

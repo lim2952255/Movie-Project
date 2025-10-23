@@ -126,7 +126,7 @@
 
 </head>
 <body>
-<div th:replace="/layout/header :: header"></div>
+<div th:replace="~{/layout/header :: header}"></div>
 
 <p th:text="|${movie.title} 상세보기 페이지|"> 영화 상세보기 페이지</p>
 <a href="/home">홈으로 이동</a>
@@ -163,7 +163,7 @@
     <a th:href="@{/}">예매하기</a>
 </div>
 <hr>
-<div th:replace="/layout/board :: board"></div>
+<div th:replace="~{/layout/board :: board}"></div>
 <p><a th:href="@{/post/create/{movieId}(movieId=${movie.movieId})}">글쓰기</a></p>
 <div class="pagination-container">
     <a th:href="@{/movie/{movieId}/{pageNumber}(movieId=${movie.movieId},pageNumber=${currentPage - 1})}"

@@ -26,8 +26,8 @@ public class CommentLikeService {
 
     @Transactional
     public void setCommentLike(Long commentId, HttpSession session){
-        Comment comment = findComment(commentId);
-        User user = userService.getUser(session);
+        Comment comment = findCommentForUpdate(commentId);
+        User user = userService.getUserForUpdate(session);
 
         CommentLike commentLike = new CommentLike();
         commentLike.setCommentLike(user,comment);
@@ -37,20 +37,16 @@ public class CommentLikeService {
 
     @Transactional
     public void deleteCommentLike(Long commentId,HttpSession session) {
-        Comment comment = findComment(commentId);
-        User user = userService.getUser(session);
+        Comment comment = findCommentForUpdate(commentId);
+        User user = userService.getUserForUpdate(session);
 
         CommentLike commentLike = findCommentLike(comment, user);
         commentLike.deleteCommentLike();
     }
 
     @Transactional
-    public Comment findComment(Long commentId){
-        Optional<Comment> findComment = commentRepository.findById(commentId);
-        if(findComment.isEmpty()){
-            throw new RuntimeException();
-        }
-        return findComment.get();
+    public Comment findCommentForUpdate(Long commentId){
+        return commentRepository.findCommentForUpdate(commentId).orElse(null);
     }
 
     @Transactional

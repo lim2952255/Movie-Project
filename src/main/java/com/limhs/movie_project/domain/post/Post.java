@@ -67,8 +67,8 @@ public class Post extends BaseTimeEntity {
     }
 
     public void deletePost(){
-        this.movie.getPosts().remove(this);
-        this.user.getPosts().remove(this);
+        movie.getPosts().remove(this);
+        user.getPosts().remove(this);
     }
 
     public int getLikeCount() {

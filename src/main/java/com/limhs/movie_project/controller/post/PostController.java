@@ -62,7 +62,7 @@ public class PostController {
     public String update(@PathVariable String movieId,@PathVariable String postId, Model model){
         long id = Long.parseLong(postId);
 
-        Post post = postService.findPost(id);
+        Post post = postService.findPostForRead(id);
 
         model.addAttribute("post",post);
         model.addAttribute("movieId",movieId);
@@ -97,8 +97,8 @@ public class PostController {
         long id = Long.parseLong(postId);
         int number = Integer.parseInt(pageNumber) - 1;
 
-        Post post = postService.findPost(id);
-        User user = userService.getUser(session);
+        Post post = postService.viewPost(id);
+        User user = userService.getUserForRead(session);
 
         boolean like = likeService.userLikesPost(post, user);
 

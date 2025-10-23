@@ -46,7 +46,7 @@ public class CommentController {
     @GetMapping("/update/{postId}/{commentId}")
     public String updateForm(@PathVariable String postId, @PathVariable String commentId, Model model){
         Long id = Long.parseLong(commentId);
-        Comment comment = commentService.findComment(id);
+        Comment comment = commentService.findCommentForRead(id);
 
         model.addAttribute("comment",comment);
         model.addAttribute("postId",postId);

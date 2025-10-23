@@ -79,11 +79,11 @@ p a:hover {
     </style>
 </head>
 <body>
-<div th:replace="/layout/header :: header"></div>
+<div th:replace="~{/layout/header :: header}"></div>
 
 <p th:text="|작성한 게시물 목록|">게시물 목록</p>
 
-<div th:replace="/layout/board :: board"></div>
+<div th:replace="~{/layout/board :: board}"></div>
 
 <div class="pagination-container">
     <a th:href="@{/mypage/posts/{pageNumber}(pageNumber=${currentPage - 1})}"

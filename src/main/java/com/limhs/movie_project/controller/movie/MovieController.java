@@ -88,7 +88,7 @@ public class MovieController {
     @GetMapping("/{movieId}/{pageNumber}")
     public String movieDetail(@PathVariable String movieId, @PathVariable String pageNumber,HttpSession session, Model model){
         int movieNum = Integer.parseInt(movieId);
-        Movie movie = movieService.findByMovieId(movieNum);
+        Movie movie = movieService.findByMovieIdForRead(movieNum);
 
         List<Genre> genres = movieService.getGenresFromMovieGenres(movie);
 
@@ -107,5 +107,4 @@ public class MovieController {
         model.addAttribute("currentPage", number + 1);
         return "movie/movieDetail";
     }
-
 }

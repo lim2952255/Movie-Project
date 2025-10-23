@@ -10,7 +10,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,12 +58,8 @@ public class Comment extends BaseTimeEntity {
     }
 
     public void deleteComment(){
-        if(user != null){
-            user.getComments().remove(this);
-        }
-        if(post != null){
-            post.getComments().remove(this);
-        }
+        user.getComments().remove(this);
+        post.getComments().remove(this);
     }
 
     public int getCommentLikeCount(){

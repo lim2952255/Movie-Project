@@ -17,8 +17,14 @@ import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post,Long> {
+
+    @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
     Page<Post> findByMovie_MovieId(int movieId, Pageable pageable);
+
+    @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
     Page<Post> findByUser_UserId(String userId, Pageable pageable);
+
+    @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
     Page<Post> findByLikes_User(User user, Pageable pageable);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -29,4 +35,10 @@ public interface PostRepository extends JpaRepository<Post,Long> {
     })
     Optional<Post> findByIdWithLock(@Param("postId") Long postId);
 
+    @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
+    @Query("select p from Post p where p.id = :postId")
+    Optional<Post> findByIdForRead(@Param("postId") Long postId);
+
+    @Query("select p from Post p where p.id = :postId")
+    Optional<Post> findByIdForUpdate(@Param("postId") Long postId);
 }

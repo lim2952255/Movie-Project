@@ -40,11 +40,7 @@ public class CommentLike extends BaseEntity {
     }
 
     public void deleteCommentLike(){
-        if(user != null){
-            this.user.getCommentLikes().remove(this);
-        }
-        if(comment != null){
-            this.comment.getCommentLikes().remove(this);
-        }
+        user.getCommentLikes().remove(this);
+        comment.getCommentLikes().remove(this);
     }
 }

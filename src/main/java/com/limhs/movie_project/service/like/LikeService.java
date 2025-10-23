@@ -22,8 +22,8 @@ public class LikeService {
 
     @Transactional
     public void saveLike(Long postId, HttpSession session){
-        Post post = postService.findPost(postId);
-        User user = userService.getUser(session);
+        Post post = postService.findPostForUpdate(postId);
+        User user = userService.getUserForUpdate(session);
 
         Like like = new Like();
 
@@ -42,8 +42,8 @@ public class LikeService {
 
     @Transactional
     public void deleteLike(Long postId,HttpSession session){
-        Post post = postService.findPost(postId);
-        User user = userService.getUser(session);
+        Post post = postService.findPostForUpdate(postId);
+        User user = userService.getUserForUpdate(session);
         Like like = findLike(post, user);
         like.deleteLike();
     }
