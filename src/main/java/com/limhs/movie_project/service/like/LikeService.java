@@ -55,8 +55,4 @@ public class LikeService {
         }
         return true;
     }
-
-    public void deleteByPost(Post post){
-        likeRepository.deleteByPost(post);
-    }
 }

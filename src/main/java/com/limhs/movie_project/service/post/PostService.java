@@ -1,5 +1,6 @@
 package com.limhs.movie_project.service.post;
 
+import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
@@ -114,5 +115,15 @@ public class PostService {
         Page<Post> posts = postRepository.findByLikes_User(user, pageable);
 
         return posts;
+    }
+
+    @Transactional(readOnly = true)
+    public long getTotalElements(Page<Post> postList){
+        return postList.getTotalElements();
+    }
+
+    @Transactional(readOnly = true)
+    public int getCurrentElements(Page<Post> postList){
+        return postList.getNumber() * postList.getSize() + postList.getNumberOfElements();
     }
 }

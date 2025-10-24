@@ -5,6 +5,7 @@ import com.limhs.movie_project.domain.post.Post;
 import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
@@ -16,6 +17,8 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment,Long> {
 
+    @EntityGraph(attributePaths = {"user", "commentLikes"})
+    //@EntityGraph(attributePaths = {"user"})
     @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
     Page<Comment> findByPostId(Long postId, Pageable pageable);
 

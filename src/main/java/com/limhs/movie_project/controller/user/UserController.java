@@ -3,6 +3,7 @@ package com.limhs.movie_project.controller.user;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.service.favorite.FavoriteService;
+import com.limhs.movie_project.service.movie.MovieService;
 import com.limhs.movie_project.service.post.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 public class UserController {
     private final FavoriteService favoriteService;
     private final PostService postService;
+    private final MovieService movieService;
 
     @GetMapping("mypage/favorites")
     public String favoritesRedirect(){
@@ -48,6 +50,8 @@ public class UserController {
         List<MovieCardDTO> movies = favoriteMovie.getContent();
 
         model.addAttribute("movies", movies);
+        model.addAttribute("totalElements", movieService.getTotalElements(favoriteMovie));
+        model.addAttribute("currentElements",movieService.getCurrentElements(favoriteMovie));
         model.addAttribute("totalPages", favoriteMovie.getTotalPages());
         model.addAttribute("currentPage", number + 1);
 
@@ -80,6 +84,8 @@ public class UserController {
         List<Post> posts = getPosts.getContent();
 
         model.addAttribute("posts", posts);
+        model.addAttribute("totalElements", postService.getTotalElements(getPosts));
+        model.addAttribute("currentElements",postService.getCurrentElements(getPosts));
         model.addAttribute("totalPages", getPosts.getTotalPages());
         model.addAttribute("currentPage", number + 1);
 
@@ -94,6 +100,8 @@ public class UserController {
         List<Post> posts = getPosts.getContent();
 
         model.addAttribute("posts", posts);
+        model.addAttribute("totalElements", postService.getTotalElements(getPosts));
+        model.addAttribute("currentElements",postService.getCurrentElements(getPosts));
         model.addAttribute("totalPages", getPosts.getTotalPages());
         model.addAttribute("currentPage", number + 1);
         return "home/likelist.html";

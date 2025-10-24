@@ -9,9 +9,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -20,7 +21,8 @@ public class Comment extends BaseTimeEntity {
     public Comment() {
     }
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentLike> commentLikes = new ArrayList<>();
+    //@BatchSize(size = 10)
+    private Set<CommentLike> commentLikes = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -61,9 +63,4 @@ public class Comment extends BaseTimeEntity {
         user.getComments().remove(this);
         post.getComments().remove(this);
     }
-
-    public int getCommentLikeCount(){
-        return commentLikes != null ? commentLikes.size() : 0;
-    }
-
 }

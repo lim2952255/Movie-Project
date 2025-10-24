@@ -6,10 +6,7 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -18,13 +15,17 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post,Long> {
 
+
     @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
+    @EntityGraph(attributePaths = {"user" , "likes", "comments"})
     Page<Post> findByMovie_MovieId(int movieId, Pageable pageable);
 
     @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
+    @EntityGraph(attributePaths = {"user" , "likes", "comments"})
     Page<Post> findByUser_UserId(String userId, Pageable pageable);
 
     @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
+    @EntityGraph(attributePaths = {"user" , "likes", "comments"})
     Page<Post> findByLikes_User(User user, Pageable pageable);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -33,6 +34,7 @@ public interface PostRepository extends JpaRepository<Post,Long> {
             // @QueryHint(name = "javax.persistence.lock.timeout", value = "5000")
             @QueryHint(name = "org.hibernate.timeout", value = "5") //타임아웃 설정
     })
+    @EntityGraph(attributePaths = {"likes","user","movie"})
     Optional<Post> findByIdWithLock(@Param("postId") Long postId);
 
     @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))

@@ -6,6 +6,8 @@
 
 <!-- 영화 데이터 반복 -->
 <div th:fragment = "movieList">
+    <h1 th:text="|영화 수: ${currentElements} / ${totalElements}|"></h1>
+
     <div class = "movie-container">
         <div th:each="movie : ${movies}">
             <a th:href="@{/movie/{movieId}(movieId=${movie.movieId})}">

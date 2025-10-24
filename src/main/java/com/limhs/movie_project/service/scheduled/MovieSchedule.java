@@ -41,7 +41,7 @@ public class MovieSchedule {
     }
 
     //매일 09시에 반복적으로 로직 수행
-    @Scheduled(cron = "0 23 21 * * *")
+    @Scheduled(cron = "0 7 7 * * *")
     @Transactional
     public void movieListUpdate() throws IOException, InterruptedException {
         log.info("Genre Update start");
@@ -102,10 +102,12 @@ public class MovieSchedule {
 
             for (Movie movie : results) {
                 movie.setPopular(true);
+                log.info("error check {}",movie.getVersion());
                 Optional<Movie> findMovie = movieRepository.findByMovieIdForUpdate(movie.getMovieId());
                 if(findMovie.isEmpty()){
-                    movieRepository.save(movie);
-                    mappingGenreWithMovie(movie);
+                    log.info("error check {}",movie.getVersion());
+                    Movie savedMovie = movieRepository.save(movie);
+                    mappingGenreWithMovie(savedMovie);
                 }
                 else{
                     Movie popularMovie = findMovie.get();
@@ -140,8 +142,8 @@ public class MovieSchedule {
                 movie.setPlaying(true);
                 Optional<Movie> findMovie = movieRepository.findByMovieIdForUpdate(movie.getMovieId());
                 if(findMovie.isEmpty()){
-                    movieRepository.save(movie);
-                    mappingGenreWithMovie(movie);
+                    Movie savedMovie = movieRepository.save(movie);
+                    mappingGenreWithMovie(savedMovie);
                 }
                 else{
                     Movie playingMovie = findMovie.get();

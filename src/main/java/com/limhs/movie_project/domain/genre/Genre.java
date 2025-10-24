@@ -9,7 +9,9 @@ import lombok.Setter;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_ONLY;
 
@@ -22,7 +24,7 @@ public class Genre extends BaseEntity {
 
     @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @org.hibernate.annotations.Cache(usage = READ_ONLY)
-    private List<MovieGenres> movieGenres = new ArrayList<>();
+    private Set<MovieGenres> movieGenres = new HashSet<>();
 
     @JsonProperty("id")
     private int genreId;

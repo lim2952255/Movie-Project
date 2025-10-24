@@ -49,12 +49,14 @@ public class MovieController {
     @GetMapping("/popularList/{pageNumber}")
     public String popularList(@PathVariable String pageNumber, Model model){
         int number = Integer.parseInt(pageNumber) - 1;
-        Page<MovieCardDTO> poplarMovie = movieService.findPoplar(number);
+        Page<MovieCardDTO> popularMovie = movieService.findPoplar(number);
 
-        List<MovieCardDTO> movies = poplarMovie.getContent();
+        List<MovieCardDTO> movies = popularMovie.getContent();
 
         model.addAttribute("movies", movies);
-        model.addAttribute("totalPages", poplarMovie.getTotalPages());
+        model.addAttribute("totalElements", movieService.getTotalElements(popularMovie));
+        model.addAttribute("currentElements",movieService.getCurrentElements(popularMovie));
+        model.addAttribute("totalPages", popularMovie.getTotalPages());
         model.addAttribute("currentPage", number + 1);
         return "/movie/popularList";
     }
@@ -67,6 +69,8 @@ public class MovieController {
         List<MovieCardDTO> movies = playingMovie.getContent();
 
         model.addAttribute("movies", movies);
+        model.addAttribute("totalElements", movieService.getTotalElements(playingMovie));
+        model.addAttribute("currentElements",movieService.getCurrentElements(playingMovie));
         model.addAttribute("totalPages", playingMovie.getTotalPages());
         model.addAttribute("currentPage", number + 1);
         return "/movie/playingList";
@@ -80,6 +84,8 @@ public class MovieController {
         List<MovieCardDTO> movies = otherMovie.getContent();
 
         model.addAttribute("movies", movies);
+        model.addAttribute("totalElements", movieService.getTotalElements(otherMovie));
+        model.addAttribute("currentElements",movieService.getCurrentElements(otherMovie));
         model.addAttribute("totalPages", otherMovie.getTotalPages());
         model.addAttribute("currentPage", number + 1);
         return "/movie/otherList";
@@ -103,6 +109,8 @@ public class MovieController {
         List<Post> posts = post.getContent();
         model.addAttribute("genres", genres);
         model.addAttribute("posts",posts);
+        model.addAttribute("totalElements", postService.getTotalElements(post));
+        model.addAttribute("currentElements",postService.getCurrentElements(post));
         model.addAttribute("totalPages", post.getTotalPages());
         model.addAttribute("currentPage", number + 1);
         return "movie/movieDetail";

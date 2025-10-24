@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class MovieService {
@@ -77,10 +78,21 @@ public class MovieService {
     @Transactional(readOnly = true)
     public List<Genre> getGenresFromMovieGenres(Movie movie){
         List<Genre> genres = new ArrayList<>();
-        List<MovieGenres> movieGenres = movie.getMovieGenres();
+        Set<MovieGenres> movieGenres = movie.getMovieGenres();
         for (MovieGenres movieGenre : movieGenres) {
             genres.add(movieGenre.getGenre());
         }
-        return  genres;
+        return genres;
     }
+
+    @Transactional(readOnly = true)
+    public long getTotalElements(Page<MovieCardDTO> movieCardList){
+        return movieCardList.getTotalElements();
+    }
+
+    @Transactional(readOnly = true)
+    public int getCurrentElements(Page<MovieCardDTO> movieCardList){
+        return movieCardList.getNumber() * movieCardList.getSize() + movieCardList.getNumberOfElements();
+    }
+
 }

@@ -111,6 +111,8 @@ public class PostController {
         model.addAttribute("userLike",like);
 
         model.addAttribute("comments",comments);
+        model.addAttribute("totalElements", commentService.getTotalElements(findComments));
+        model.addAttribute("currentElements",commentService.getCurrentElements(findComments));
         model.addAttribute("totalPages", findComments.getTotalPages());
         model.addAttribute("currentPage", number + 1);
 

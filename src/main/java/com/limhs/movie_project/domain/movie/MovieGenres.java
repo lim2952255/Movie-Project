@@ -1,12 +1,15 @@
 package com.limhs.movie_project.domain.movie;
 
 import com.limhs.movie_project.domain.genre.Genre;
+import com.limhs.movie_project.domain.like.Like;
 import com.limhs.movie_project.domain.mappedSuperClass.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.util.Objects;
 
 import static org.hibernate.annotations.CacheConcurrencyStrategy.READ_ONLY;
 
@@ -45,5 +48,17 @@ public class MovieGenres extends BaseEntity {
         if(this.genre != null && !genre.getMovieGenres().contains(this)){
             this.genre.getMovieGenres().add(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof MovieGenres movieGenres)) return false;
+        return Objects.equals(this.getMovie().getId(), movieGenres.getMovie().getId()) &&
+                Objects.equals(this.getGenre().getId(), movieGenres.getGenre().getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(movie, genre);
     }
 }

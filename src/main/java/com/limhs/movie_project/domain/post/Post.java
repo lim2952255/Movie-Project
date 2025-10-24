@@ -11,7 +11,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -23,7 +25,7 @@ public class Post extends BaseTimeEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>();
+    private Set<Like> likes = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -69,13 +71,5 @@ public class Post extends BaseTimeEntity {
     public void deletePost(){
         movie.getPosts().remove(this);
         user.getPosts().remove(this);
-    }
-
-    public int getLikeCount() {
-        return likes != null ? likes.size() : 0;
-    }
-
-    public int getCommentCount(){
-        return comments != null ? comments.size() : 0;
     }
 }

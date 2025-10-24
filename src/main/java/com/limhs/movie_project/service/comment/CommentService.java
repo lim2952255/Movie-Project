@@ -1,5 +1,6 @@
 package com.limhs.movie_project.service.comment;
 
+import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.comment.Comment;
 import com.limhs.movie_project.domain.post.Post;
@@ -89,5 +90,15 @@ public class CommentService {
     public void deleteComment(Long commentId){
         Comment comment = findCommentForUpdate(commentId);
         comment.deleteComment();
+    }
+
+    @Transactional(readOnly = true)
+    public long getTotalElements(Page<Comment> commentsList){
+        return commentsList.getTotalElements();
+    }
+
+    @Transactional(readOnly = true)
+    public int getCurrentElements(Page<Comment> commentsList){
+        return commentsList.getNumber() * commentsList.getSize() + commentsList.getNumberOfElements();
     }
 }

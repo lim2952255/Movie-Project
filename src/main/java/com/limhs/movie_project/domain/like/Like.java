@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "likes")
 @Getter @Setter
@@ -47,5 +49,17 @@ public class Like extends BaseEntity {
     public void deleteLike(){
         this.post.getLikes().remove(this);
         this.user.getLikes().remove(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Like like)) return false;
+        return Objects.equals(this.getUser().getId(), like.getUser().getId()) &&
+                Objects.equals(this.getPost().getId(), like.getPost().getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(post, user);
     }
 }

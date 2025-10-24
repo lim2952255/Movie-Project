@@ -12,7 +12,9 @@ import lombok.Setter;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -35,10 +37,10 @@ public class Movie extends BaseEntity {
 
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovieGenres> movieGenres = new ArrayList<>();
+    private Set<MovieGenres> movieGenres = new HashSet<>();
 
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)
-    private List<Favorite> favorites = new ArrayList<>();
+    private Set<Favorite> favorites = new HashSet<>();
 
     @JsonProperty("genre_ids")
     private List<Integer> genreIds;
@@ -63,7 +65,8 @@ public class Movie extends BaseEntity {
     private String title;
 
     @Version
-    private Long version;
+    private Long version = 0L; // 초기화 명시
+
 
 
 }

@@ -122,7 +122,7 @@
     <div class="post-content" th:text="${post.content}">
         게시글 내용이 여기에 표시됩니다.
     </div>
-    <span th:text="|좋아요 수: ${post.likeCount}">총 좋아요 수</span>
+    <span th:text="|좋아요 수: ${post.likes.size()}">총 좋아요 수</span>
     <div th:if="${userLike}">
         <a th:href="@{/dislike/{postId}(postId = ${post.id})}">좋아요 취소하기</a>
     </div>
@@ -136,7 +136,7 @@
     </div>
 
     <hr>
-    <div th:replace="/layout/commentlist :: commentList"></div>
+    <div th:replace="~{/layout/commentlist :: commentList}"></div>
 </div>
 <a th:href="@{/movie/{movieId}(movieId=${post.movie.movieId})}">영화페이지로 이동하기</a>
 </body>

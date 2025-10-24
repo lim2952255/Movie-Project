@@ -1,12 +1,16 @@
 package com.limhs.movie_project.domain.favorite;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.limhs.movie_project.domain.mappedSuperClass.BaseEntity;
-import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
-import jakarta.persistence.*;
+import com.limhs.movie_project.domain.user.User;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Objects;
 
 @Entity
 @Getter @Setter
@@ -48,5 +52,17 @@ public class Favorite extends BaseEntity {
     public void unsetFavorite(){
         movie.getFavorites().remove(this);
         user.getFavorites().remove(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Favorite favorite)) return false;
+        return Objects.equals(this.getMovie().getId(), favorite.getMovie().getId()) &&
+               Objects.equals(this.getUser().getId(), favorite.getUser().getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(movie, user);
     }
 }

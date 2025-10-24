@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -82,7 +83,7 @@ public class FavoriteService {
     @Transactional(readOnly = true)
     public boolean isFavorite(HttpSession session, Movie movie){
         User user = userService.getUserForRead(session);
-        List<Favorite> favorites = user.getFavorites();
+        Set<Favorite> favorites = user.getFavorites();
 
         boolean isFavorites = false;
 
