@@ -51,18 +51,6 @@ public class CommentLikeService {
 
     @Transactional
     public CommentLike findCommentLike(Comment comment, User user){
-        Optional<CommentLike> findCommentLike = commentLikeRepository.findByCommentAndUser(comment, user);
-        if(findCommentLike.isEmpty()){
-            throw new RuntimeException();
-        }
-        return findCommentLike.get();
-    }
-    @Transactional
-    public boolean userLikesComment(User user, Comment comment){
-        Optional<CommentLike> findCommentLike = commentLikeRepository.findByCommentIdAndUser(comment.getId(), user);
-        if(findCommentLike.isEmpty()){
-            return false;
-        }
-        return true;
+        return commentLikeRepository.findByCommentAndUser(comment, user).orElse(null);
     }
 }

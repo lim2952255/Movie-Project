@@ -1,6 +1,7 @@
 package com.limhs.movie_project.controller.post;
 
 import com.limhs.movie_project.domain.comment.Comment;
+import com.limhs.movie_project.domain.like.CommentLike;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.service.comment.CommentService;
@@ -105,12 +106,12 @@ public class PostController {
         Page<Comment> findComments = commentService.findComment(id, number);
         List<Comment> commentList = findComments.getContent();
 
-        List<Comment> comments = commentService.userLikesComment(commentList, user);
+        commentService.userLikesComment(commentList, user);
 
         model.addAttribute("post",post);
         model.addAttribute("userLike",like);
 
-        model.addAttribute("comments",comments);
+        model.addAttribute("comments",commentList);
         model.addAttribute("totalElements", commentService.getTotalElements(findComments));
         model.addAttribute("currentElements",commentService.getCurrentElements(findComments));
         model.addAttribute("totalPages", findComments.getTotalPages());

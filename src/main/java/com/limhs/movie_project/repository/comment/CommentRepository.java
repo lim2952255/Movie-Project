@@ -12,13 +12,13 @@ import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment,Long> {
 
-    @EntityGraph(attributePaths = {"user", "commentLikes"})
-    //@EntityGraph(attributePaths = {"user"})
+    @EntityGraph(attributePaths = {"user"})
     @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
     Page<Comment> findByPostId(Long postId, Pageable pageable);
 
@@ -28,4 +28,6 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
 
     @Query("select c from Comment c where c.id = :id")
     Optional<Comment> findCommentForUpdate(@Param("id") Long id);
+
+    List<Comment> findByPostIdIn(List<Long> postIds);
 }

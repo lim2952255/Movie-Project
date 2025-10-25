@@ -94,9 +94,9 @@ public class MovieController {
     @GetMapping("/{movieId}/{pageNumber}")
     public String movieDetail(@PathVariable String movieId, @PathVariable String pageNumber,HttpSession session, Model model){
         int movieNum = Integer.parseInt(movieId);
-        Movie movie = movieService.findByMovieIdForRead(movieNum);
+        Movie movie = movieService.findByMovieIdWithMoviegenres(movieNum);
 
-        List<Genre> genres = movieService.getGenresFromMovieGenres(movie);
+        List<Genre> genres = movieService.getGenresFromMovie(movie);
 
         model.addAttribute("movie",movie);
 

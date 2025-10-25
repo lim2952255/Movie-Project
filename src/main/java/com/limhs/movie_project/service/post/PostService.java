@@ -1,9 +1,13 @@
 package com.limhs.movie_project.service.post;
 
+import com.limhs.movie_project.domain.comment.Comment;
+import com.limhs.movie_project.domain.like.Like;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
+import com.limhs.movie_project.repository.comment.CommentRepository;
+import com.limhs.movie_project.repository.like.LikeRepository;
 import com.limhs.movie_project.repository.post.PostRepository;
 import com.limhs.movie_project.service.movie.MovieService;
 import com.limhs.movie_project.service.user.UserService;
@@ -16,12 +20,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
     private final UserService userService;
     private final MovieService movieService;
     private Pageable pageable;
@@ -88,7 +99,7 @@ public class PostService {
         pageable = PageRequest.of(pageNumber, 10);
 
         Page<Post> posts = postRepository.findByMovie_MovieId(movie.getMovieId(), pageable);
-
+        findWithLikesAndComments(posts);
         return posts;
     }
 
@@ -101,8 +112,9 @@ public class PostService {
 
         Page<Post> posts = postRepository.findByUser_UserId(user.getUserId(), pageable);
 
-        return posts;
+        findWithLikesAndComments(posts);
 
+        return posts;
     }
 
     @Transactional(readOnly = true)
@@ -114,7 +126,24 @@ public class PostService {
 
         Page<Post> posts = postRepository.findByLikes_User(user, pageable);
 
+        findWithLikesAndComments(posts);
+
         return posts;
+    }
+
+    private void findWithLikesAndComments(Page<Post> posts) {
+        List<Long> postIds = posts.stream().map(p -> p.getId()).toList();
+
+        List<Like> likes = likeRepository.findByPostIdIn(postIds);
+        List<Comment> comments = commentRepository.findByPostIdIn(postIds);
+
+        Map<Long, List<Like>> likeMap = likes.stream().collect(Collectors.groupingBy(like -> like.getPost().getId()));
+        Map<Long, List<Comment>> commentMap = comments.stream().collect(Collectors.groupingBy(comment -> comment.getPost().getId()));
+
+        for (Post post : posts) {
+            post.setLikes(likeMap.getOrDefault(post.getId(), new ArrayList<>()));
+            post.setComments(commentMap.getOrDefault(post.getId(), new ArrayList<>()));
+        }
     }
 
     @Transactional(readOnly = true)

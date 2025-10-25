@@ -14,8 +14,9 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Long> {
 
     @QueryHints({
-            @QueryHint(name = "org.hibernate.readOnly",value = "true"),
-            @QueryHint(name = "org.hibernate.cacheable", value = "true")})
+            @QueryHint(name = "org.hibernate.readOnly",value = "true")
+            ,@QueryHint(name = "org.hibernate.cacheable", value = "true")
+            })
     @Query("select u from User u where u.userId = :userId")
     Optional<User> findByUserIdForRead(@Param("userId")String userId);
 

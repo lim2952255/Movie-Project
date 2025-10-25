@@ -49,16 +49,4 @@ public class MovieGenres extends BaseEntity {
             this.genre.getMovieGenres().add(this);
         }
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof MovieGenres movieGenres)) return false;
-        return Objects.equals(this.getMovie().getId(), movieGenres.getMovie().getId()) &&
-                Objects.equals(this.getGenre().getId(), movieGenres.getGenre().getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(movie, genre);
-    }
 }

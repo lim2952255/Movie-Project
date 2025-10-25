@@ -8,8 +8,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Objects;
-
 @Entity
 @Getter @Setter
 public class CommentLike extends BaseEntity {
@@ -45,17 +43,5 @@ public class CommentLike extends BaseEntity {
     public void deleteCommentLike(){
         user.getCommentLikes().remove(this);
         comment.getCommentLikes().remove(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof CommentLike commentLike)) return false;
-        return Objects.equals(this.getUser().getId(), commentLike.getUser().getId()) &&
-                Objects.equals(this.getComment().getId(), commentLike.getComment().getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(comment, user);
     }
 }

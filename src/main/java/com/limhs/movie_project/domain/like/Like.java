@@ -51,15 +51,4 @@ public class Like extends BaseEntity {
         this.user.getLikes().remove(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Like like)) return false;
-        return Objects.equals(this.getUser().getId(), like.getUser().getId()) &&
-                Objects.equals(this.getPost().getId(), like.getPost().getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(post, user);
-    }
 }

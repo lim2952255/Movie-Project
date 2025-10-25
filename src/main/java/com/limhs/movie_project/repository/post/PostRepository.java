@@ -17,23 +17,23 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 
 
     @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
-    @EntityGraph(attributePaths = {"user" , "likes", "comments"})
+    @EntityGraph(attributePaths = {"user"})
     Page<Post> findByMovie_MovieId(int movieId, Pageable pageable);
 
     @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
-    @EntityGraph(attributePaths = {"user" , "likes", "comments"})
+    @EntityGraph(attributePaths = {"user"})
     Page<Post> findByUser_UserId(String userId, Pageable pageable);
 
     @QueryHints(@QueryHint(name = "org.hibernate.readOnly", value = "true"))
-    @EntityGraph(attributePaths = {"user" , "likes", "comments"})
+    @EntityGraph(attributePaths = {"user"})
     Page<Post> findByLikes_User(User user, Pageable pageable);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Post p where p.id = :postId")
     @QueryHints({
-            // @QueryHint(name = "javax.persistence.lock.timeout", value = "5000")
             @QueryHint(name = "org.hibernate.timeout", value = "5") //타임아웃 설정
     })
+
     @EntityGraph(attributePaths = {"likes","user","movie"})
     Optional<Post> findByIdWithLock(@Param("postId") Long postId);
 

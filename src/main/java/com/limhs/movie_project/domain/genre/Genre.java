@@ -24,7 +24,7 @@ public class Genre extends BaseEntity {
 
     @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @org.hibernate.annotations.Cache(usage = READ_ONLY)
-    private Set<MovieGenres> movieGenres = new HashSet<>();
+    private List<MovieGenres> movieGenres = new ArrayList<>();
 
     @JsonProperty("id")
     private int genreId;

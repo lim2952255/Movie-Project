@@ -83,7 +83,7 @@ public class FavoriteService {
     @Transactional(readOnly = true)
     public boolean isFavorite(HttpSession session, Movie movie){
         User user = userService.getUserForRead(session);
-        Set<Favorite> favorites = user.getFavorites();
+        List<Favorite> favorites = user.getFavorites();
 
         boolean isFavorites = false;
 

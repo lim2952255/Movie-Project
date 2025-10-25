@@ -37,10 +37,10 @@ public class Movie extends BaseEntity {
 
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<MovieGenres> movieGenres = new HashSet<>();
+    private List<MovieGenres> movieGenres = new ArrayList<>();
 
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)
-    private Set<Favorite> favorites = new HashSet<>();
+    private List<Favorite> favorites = new ArrayList<>();
 
     @JsonProperty("genre_ids")
     private List<Integer> genreIds;

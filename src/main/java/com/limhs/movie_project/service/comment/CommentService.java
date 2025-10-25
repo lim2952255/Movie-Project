@@ -1,5 +1,6 @@
 package com.limhs.movie_project.service.comment;
 
+import com.limhs.movie_project.domain.like.CommentLike;
 import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.comment.Comment;
@@ -50,20 +51,24 @@ public class CommentService {
         pageable = PageRequest.of(pageNumber, 10);
 
         Page<Comment> comments = commentRepository.findByPostId(postId, pageable);
-
+        for (Comment comment : comments) {
+            comment.setCommentLikeSize(comment.getCommentLikes().size());
+        }
         return comments;
     }
 
     @Transactional
-    public List<Comment> userLikesComment(List<Comment> comments, User user){
+    public void userLikesComment(List<Comment> comments, User user){
 
-        List<Comment> commentList = new ArrayList<>();
         for (Comment comment : comments) {
-            boolean userLikes = commentLikeService.userLikesComment(user, comment);
-            comment.setUserLike(userLikes);
-            commentList.add(comment);
+            comment.setUserLike(false);
+            for (CommentLike commentLike : comment.getCommentLikes()) {
+                if(commentLike.getUser().getUserId().equals(user.getUserId())){
+                    comment.setUserLike(true);
+                    break;
+                }
+            }
         }
-        return commentList;
     }
 
     @Transactional(readOnly = true)
@@ -78,8 +83,7 @@ public class CommentService {
 
     @Transactional
     public Comment updateComment(Comment comment, Long commentId){
-        Comment findComment = findCommentForUpdate(commentId);
-        Comment updateComment = findComment;
+        Comment updateComment = findCommentForUpdate(commentId);
         updateComment.setContent(comment.getContent());
         updateComment.setUpdatedTime(LocalDateTime.now());
 

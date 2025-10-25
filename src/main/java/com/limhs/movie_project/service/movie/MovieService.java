@@ -35,6 +35,11 @@ public class MovieService {
         return movieRepository.findByMovieIdForRead(movieId).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public Movie findByMovieIdWithMoviegenres(int movieId){
+        return movieRepository.findByIdWithMovieGenres(movieId).orElse(null);
+    }
+
     @Transactional
     public Movie findByMovieIdForUpdate(int movieId){
         return movieRepository.findByMovieIdForUpdate(movieId).orElse(null);
@@ -76,12 +81,11 @@ public class MovieService {
     }
 
     @Transactional(readOnly = true)
-    public List<Genre> getGenresFromMovieGenres(Movie movie){
-        List<Genre> genres = new ArrayList<>();
-        Set<MovieGenres> movieGenres = movie.getMovieGenres();
-        for (MovieGenres movieGenre : movieGenres) {
-            genres.add(movieGenre.getGenre());
-        }
+    public List<Genre> getGenresFromMovie(Movie movie){
+        List<MovieGenres> movieGenres = movie.getMovieGenres();
+
+        List<Long> movieGenresIds = movieGenres.stream().map(movieGenre -> movieGenre.getId()).toList();
+        List<Genre> genres = genreRepository.findByMovieGenresIdIn(movieGenresIds);
         return genres;
     }
 

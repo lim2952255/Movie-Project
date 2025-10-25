@@ -11,7 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,8 +23,8 @@ public class Comment extends BaseTimeEntity {
     public Comment() {
     }
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    //@BatchSize(size = 10)
-    private Set<CommentLike> commentLikes = new HashSet<>();
+    @BatchSize(size = 10)
+    private List<CommentLike> commentLikes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -39,6 +41,9 @@ public class Comment extends BaseTimeEntity {
 
     @Transient
     private boolean userLike;
+
+    @Transient
+    private long commentLikeSize;
 
     public void setComment(User user, Post post){
         if(user != null && this.user != user){
