@@ -2,7 +2,6 @@ package com.limhs.movie_project.service.post;
 
 import com.limhs.movie_project.domain.comment.Comment;
 import com.limhs.movie_project.domain.like.Like;
-import com.limhs.movie_project.domain.movie.MovieCardDTO;
 import com.limhs.movie_project.domain.post.Post;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.domain.movie.Movie;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,7 +59,8 @@ public class PostService {
 
         return post;
     }
-
+    
+    // Post 조회 메서드
     @Transactional
     public Post viewPost(Long postId){
         try{

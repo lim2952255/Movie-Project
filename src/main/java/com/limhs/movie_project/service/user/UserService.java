@@ -51,7 +51,8 @@ public class UserService {
 
         return user;
     }
-
+    
+    // 읽기 전용 조회 메서드
     @Transactional(readOnly = true)
     public User getUserForRead(HttpSession session){
         Object findUser = session.getAttribute("user");
@@ -62,7 +63,8 @@ public class UserService {
         }
         throw new RuntimeException();
     }
-
+    
+    //수정 전용 조회 메서드
     @Transactional
     public User getUserForUpdate(HttpSession session){
         Object findUser = session.getAttribute("user");

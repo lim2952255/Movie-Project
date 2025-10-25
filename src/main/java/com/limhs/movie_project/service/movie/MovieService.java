@@ -20,14 +20,13 @@ import java.util.Set;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final GenreRepository genreRepository;
-    private final MovieGenresRepository movieGenresRepository;
     private Pageable pageable;
 
     @Autowired
-    public MovieService(MovieRepository movieRepository, GenreRepository genreRepository, MovieGenresRepository movieGenresRepository) {
+    public MovieService(MovieRepository movieRepository, GenreRepository genreRepository) {
         this.movieRepository = movieRepository;
         this.genreRepository = genreRepository;
-        this.movieGenresRepository = movieGenresRepository;
+
     }
 
     @Transactional(readOnly = true)

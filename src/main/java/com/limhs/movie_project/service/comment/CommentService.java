@@ -44,7 +44,8 @@ public class CommentService {
         comment.setComment(user,post);
         commentRepository.save(comment);
     }
-
+    
+    // Comment를 페이지 단위로 조회
     @Transactional(readOnly = true)
     public Page<Comment> findComment(Long postId, int pageNumber){
         //Pageable
@@ -56,7 +57,8 @@ public class CommentService {
         }
         return comments;
     }
-
+    
+    // 사용자가 댓글에 좋아요를 눌렀는지 확인하기
     @Transactional
     public void userLikesComment(List<Comment> comments, User user){
 
@@ -70,12 +72,14 @@ public class CommentService {
             }
         }
     }
-
+    
+    // 읽기 전용 조회 메서드
     @Transactional(readOnly = true)
     public Comment findCommentForRead(Long commentId){
         return commentRepository.findCommentForRead(commentId).orElse(null);
     }
-
+    
+    // 수저 전용 조회 메서드
     @Transactional
     public Comment findCommentForUpdate(Long commentId){
         return commentRepository.findCommentForUpdate(commentId).orElse(null);

@@ -1,6 +1,8 @@
 package com.limhs.movie_project.controller.comment;
 
 import com.limhs.movie_project.service.like.CommentLikeService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

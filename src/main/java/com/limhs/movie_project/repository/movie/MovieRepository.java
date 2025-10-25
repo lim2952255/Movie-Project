@@ -24,10 +24,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("select m from Movie m where m.movieId = :movieId")
     Optional<Movie> findByMovieIdForRead(@Param("movieId") int movieId);
 
-    @QueryHints({
-            @QueryHint(name = "org.hibernate.readOnly",value= "true"),
-            @QueryHint(name = "org.hibernate.cacheable", value = "true")
-            })
     @Query("select m from Movie m where m.movieId = :movieId")
     Optional<Movie> findByMovieIdForUpdate(@Param("movieId") int movieId);
 
@@ -54,7 +50,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("UPDATE Movie m set m.isPopular = false, m.isPlaying = false")
     void resetAllFlags();
 
-    @QueryHints(@QueryHint(name = "org.hibernate.readOnly",value= "true"))
+    @QueryHints({@QueryHint(name = "org.hibernate.readOnly",value= "true"),
+                @QueryHint(name = "org.hibernate.cacheable", value = "true")})
     @Query("select m from Movie m join fetch m.movieGenres where m.movieId = :movieId")
     Optional<Movie> findByIdWithMovieGenres(@Param("movieId") int movieId);
 }
