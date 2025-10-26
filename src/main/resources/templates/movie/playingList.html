@@ -70,12 +70,12 @@
 <div th:replace="~{/layout/movieList :: movieList}"></div>
 
 <div class="pagination-container">
-    <a th:href="@{/movie/playingList/{pageNumber}(pageNumber=${currentPage - 1})}"
+    <a th:href="@{/movie/playingList/{pageNumber}(pageNumber=${currentPage - 1}, sort=${param.sort})}"
        th:if="${currentPage > 1}">이전</a>
 
     <span th:text="${currentPage}">1</span>
 
-    <a th:href="@{/movie/playingList/{pageNumber}(pageNumber=${currentPage + 1})}"
+    <a th:href="@{/movie/playingList/{pageNumber}(pageNumber=${currentPage + 1}, sort=${param.sort})}"
        th:if="${currentPage < totalPages}">다음</a>
 
 </div>

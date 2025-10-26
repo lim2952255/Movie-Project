@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -47,9 +48,10 @@ public class MovieController {
     }
 
     @GetMapping("/popularList/{pageNumber}")
-    public String popularList(@PathVariable String pageNumber, Model model){
+    public String popularList(@PathVariable String pageNumber, @RequestParam(name = "sort", defaultValue = "popularity") String sort, Model model){
         int number = Integer.parseInt(pageNumber) - 1;
-        Page<MovieCardDTO> popularMovie = movieService.findPoplar(number);
+
+        Page<MovieCardDTO> popularMovie = movieService.findPopular(number, sort);
 
         List<MovieCardDTO> movies = popularMovie.getContent();
 
@@ -62,9 +64,9 @@ public class MovieController {
     }
 
     @GetMapping("/playingList/{pageNumber}")
-    public String playingList(@PathVariable String pageNumber, Model model) {
+    public String playingList(@PathVariable String pageNumber, @RequestParam(name = "sort", defaultValue = "popularity") String sort, Model model) {
         int number = Integer.parseInt(pageNumber) - 1   ;
-        Page<MovieCardDTO> playingMovie = movieService.findPlaying(number);
+        Page<MovieCardDTO> playingMovie = movieService.findPlaying(number, sort);
 
         List<MovieCardDTO> movies = playingMovie.getContent();
 
@@ -77,9 +79,9 @@ public class MovieController {
     }
 
     @GetMapping("/otherList/{pageNumber}")
-    public String otherList(@PathVariable String pageNumber, Model model) {
+    public String otherList(@PathVariable String pageNumber, @RequestParam(name = "sort", defaultValue = "popularity") String sort, Model model) {
         int number = Integer.parseInt(pageNumber) - 1   ;
-        Page<MovieCardDTO> otherMovie = movieService.findOther(number);
+        Page<MovieCardDTO> otherMovie = movieService.findOther(number, sort);
 
         List<MovieCardDTO> movies = otherMovie.getContent();
 
@@ -92,7 +94,8 @@ public class MovieController {
     }
 
     @GetMapping("/{movieId}/{pageNumber}")
-    public String movieDetail(@PathVariable String movieId, @PathVariable String pageNumber,HttpSession session, Model model){
+    public String movieDetail(@PathVariable String movieId, @PathVariable String pageNumber,HttpSession session,
+                              @RequestParam(name = "sort", defaultValue = "createdTime") String sort, Model model){
         int movieNum = Integer.parseInt(movieId);
         Movie movie = movieService.findByMovieIdWithMoviegenres(movieNum);
 
@@ -104,7 +107,7 @@ public class MovieController {
         model.addAttribute("isFavorite",favorite);
 
         int number = Integer.parseInt(pageNumber) - 1   ;
-        Page<Post> post = postService.findPosts(number, movie);
+        Page<Post> post = postService.findPosts(number, movie, sort);
 
         List<Post> posts = post.getContent();
         model.addAttribute("genres", genres);

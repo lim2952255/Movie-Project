@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,8 +71,14 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MovieCardDTO> getFavoriteMovie(HttpSession session, int pageNumber){
-        Pageable pageable = PageRequest.of(pageNumber,20);
+    public Page<MovieCardDTO> getFavoriteMovie(HttpSession session, int pageNumber, String sortParam){
+        Pageable pageable;
+        Sort sort = movieService.findMovieSort(sortParam);
+        if(sort == null){
+            pageable = PageRequest.of(pageNumber, 20);
+        } else{
+            pageable = PageRequest.of(pageNumber, 20, sort);
+        }
 
         User user = userService.getUserForRead(session);
 

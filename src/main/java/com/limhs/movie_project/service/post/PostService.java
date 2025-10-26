@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,9 +94,14 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Post> findPosts(int pageNumber, Movie movie) {
-        //Pageable
-        pageable = PageRequest.of(pageNumber, 10);
+    public Page<Post> findPosts(int pageNumber, Movie movie,String sortParam) {
+
+        Sort sort = getPostSort(sortParam);
+        if(sort == null){
+            pageable = PageRequest.of(pageNumber, 10);
+        } else{
+            pageable = PageRequest.of(pageNumber, 10, sort);
+        }
 
         Page<Post> posts = postRepository.findByMovie_MovieId(movie.getMovieId(), pageable);
         findWithLikesAndComments(posts);
@@ -103,9 +109,14 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Post> getWritePosts(HttpSession session, int pageNumber) {
-        //Pageable
-        pageable = PageRequest.of(pageNumber, 10);
+    public Page<Post> getWritePosts(HttpSession session, int pageNumber, String sortParam) {
+
+        Sort sort = getPostSort(sortParam);
+        if(sort == null){
+            pageable = PageRequest.of(pageNumber, 10);
+        } else{
+            pageable = PageRequest.of(pageNumber, 10, sort);
+        }
 
         User user = userService.getUserForRead(session);
 
@@ -153,5 +164,17 @@ public class PostService {
     @Transactional(readOnly = true)
     public int getCurrentElements(Page<Post> postList){
         return postList.getNumber() * postList.getSize() + postList.getNumberOfElements();
+    }
+
+    @Transactional
+    public Sort getPostSort(String sortParam){
+        switch (sortParam){
+            case("createdTime"):
+                return Sort.by(Sort.Direction.DESC, "createdTime");
+            case("viewCount"):
+                return Sort.by(Sort.Direction.DESC, "viewCount");
+            default:
+                return null;
+        }
     }
 }

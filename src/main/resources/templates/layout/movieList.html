@@ -2,12 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+</head>
 <body>
 
 <!-- 영화 데이터 반복 -->
 <div th:fragment = "movieList">
     <h1 th:text="|영화 수: ${currentElements} / ${totalElements}|"></h1>
 
+    <!-- 정렬 선택 UI -->
+    <form method="get" action="">
+        <label>
+            <input type="radio" name="sort" value="popularity"
+                   th:checked="${sort == 'popularity'}"> 인기순
+        </label>
+        <label>
+            <input type="radio" name="sort" value="releaseDate"
+                   th:checked="${param.sort == 'releaseDate'}">개봉일 순
+        </label>
+        <button type="submit">검색</button>
+    </form>
     <div class = "movie-container">
         <div th:each="movie : ${movies}">
             <a th:href="@{/movie/{movieId}(movieId=${movie.movieId})}">

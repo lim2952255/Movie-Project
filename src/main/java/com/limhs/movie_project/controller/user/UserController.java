@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,10 +40,11 @@ public class UserController {
     }
 
     @GetMapping("mypage/favorites/{pageNumber}")
-    public String favorites(@PathVariable String pageNumber,HttpSession session, Model model){
+    public String favorites(@PathVariable String pageNumber, HttpSession session,
+                            @RequestParam(name = "sort", defaultValue = "popularity") String sort, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<MovieCardDTO> favoriteMovie = favoriteService.getFavoriteMovie(session, number);
+        Page<MovieCardDTO> favoriteMovie = favoriteService.getFavoriteMovie(session, number,sort);
         List<MovieCardDTO> movies = favoriteMovie.getContent();
 
         model.addAttribute("movies", movies);
@@ -77,10 +75,11 @@ public class UserController {
     }
 
     @GetMapping("mypage/posts/{pageNumber}")
-    public String posts(@PathVariable String pageNumber, HttpSession session, Model model){
+    public String posts(@PathVariable String pageNumber, HttpSession session,
+                        @RequestParam(name = "sort", defaultValue = "createdTime") String sort, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<Post> getPosts = postService.getWritePosts(session, number);
+        Page<Post> getPosts = postService.getWritePosts(session, number, sort);
         List<Post> posts = getPosts.getContent();
 
         model.addAttribute("posts", posts);

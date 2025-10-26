@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,9 +46,15 @@ public class MovieService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MovieCardDTO> findPoplar(int pageNumber){
-        //Pageable
-        pageable = PageRequest.of(pageNumber, 20);
+    public Page<MovieCardDTO> findPopular(int pageNumber, String sortParam){
+        Sort sort = findMovieSort(sortParam);
+
+        if(sort == null){
+            //Pageable
+            pageable = PageRequest.of(pageNumber, 20);
+        } else{
+            pageable = PageRequest.of(pageNumber, 20 ,sort);
+        }
 
         Page<Movie> popularMovies = movieRepository.findByIsPopular(true, pageable);
 
@@ -56,9 +63,15 @@ public class MovieService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MovieCardDTO> findPlaying(int pageNumber){
-        //Pageable
-        pageable = PageRequest.of(pageNumber, 20);
+    public Page<MovieCardDTO> findPlaying(int pageNumber, String sortParam){
+        Sort sort = findMovieSort(sortParam);
+
+        if(sort == null){
+            //Pageable
+            pageable = PageRequest.of(pageNumber, 20);
+        } else{
+            pageable = PageRequest.of(pageNumber, 20 ,sort);
+        }
 
         Page<Movie> playingMovies = movieRepository.findByIsPlaying(true, pageable);
 
@@ -68,9 +81,15 @@ public class MovieService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MovieCardDTO> findOther(int pageNumber){
-        //Pageable
-        pageable = PageRequest.of(pageNumber, 20);
+    public Page<MovieCardDTO> findOther(int pageNumber, String sortParam){
+        Sort sort = findMovieSort(sortParam);
+
+        if(sort == null){
+            //Pageable
+            pageable = PageRequest.of(pageNumber, 20);
+        } else{
+            pageable = PageRequest.of(pageNumber, 20 ,sort);
+        }
 
         Page<Movie> otherMovies = movieRepository.findByIsPopularAndIsPlaying(false, false, pageable);
 
@@ -98,4 +117,15 @@ public class MovieService {
         return movieCardList.getNumber() * movieCardList.getSize() + movieCardList.getNumberOfElements();
     }
 
+    @Transactional(readOnly = true)
+    public Sort findMovieSort(String sort){
+        switch (sort) {
+            case "popularity":
+                return Sort.by(Sort.Direction.DESC, "popularity");
+            case "releaseDate":
+                return Sort.by(Sort.Direction.DESC, "releaseDate");
+            default:
+                return null;
+        }
+    }
 }
