@@ -46,6 +46,7 @@ public class Movie extends BaseEntity {
     private List<Integer> genreIds;
 
     @JsonProperty("id")
+    @Column(unique = true)
     private int movieId;
 
     @JsonProperty("overview")

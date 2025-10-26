@@ -19,8 +19,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -41,19 +41,34 @@ public class MovieSchedule {
     }
 
     //매일 09시에 반복적으로 로직 수행
-    @Scheduled(cron = "0 55 8 * * *")
+    @Scheduled(cron = "0 24 16 * * *")
     @Transactional
     public void movieListUpdate() throws IOException, InterruptedException {
         log.info("Genre Update start");
         getGenres();
         log.info("Genre Update end");
 
-        movieRepository.resetAllFlags();
-
         log.info("Update start");
 
-        getPopularMovie();
-        getPlayingMovie();
+        List<Integer> movieList = movieRepository.findByIsPlayingTrueOrIsPopularTrue()
+                .stream().map(movie -> movie.getMovieId()).toList();
+        
+        movieRepository.resetAllFlags(); // 벌크연산 수행시 영속성 컨텍스트 플러시
+
+        Map<Integer, Movie> movieMap = movieRepository.findByMovieIdIn(movieList).stream()
+                .collect(Collectors.toMap(movie -> movie.getMovieId(), movie -> movie)); // 다시 영속화
+
+        List<Movie> newSavedMovie = new ArrayList<>();
+
+        getMoviesFromTMDBAPI(MovieType.PLAYING, movieMap, newSavedMovie);
+
+        getMoviesFromTMDBAPI(MovieType.POPULAR, movieMap, newSavedMovie);
+
+        if(!newSavedMovie.isEmpty()){
+            List<Movie> movies = movieRepository.saveAll(newSavedMovie);
+
+            mappingGenreWithMovie(movies);
+        }
 
         log.info("Update end");
     }
@@ -75,103 +90,109 @@ public class MovieSchedule {
         GenreList genreList = mapper.readValue(response.body(), GenreList.class);
         List<Genre> genres = genreList.getGenres();
 
+        Map<Integer, Genre> genreMap = genreRepository.findAll().stream()
+                .collect(Collectors.toMap(genre -> genre.getGenreId(), genre -> genre));
         for (Genre genre : genres) {
-            if(genreRepository.findByGenreId(genre.getGenreId()).isEmpty()){
+            if(genreMap.get(genre.getGenreId()) == null){
                 genreRepository.save(genre);
             }
         }
     }
 
     @Transactional
-    public void getPopularMovie() throws IOException, InterruptedException {
+    public void getMoviesFromTMDBAPI(MovieType movieType, Map<Integer, Movie> movieMap, List<Movie> newSavedMovie) throws IOException, InterruptedException {
         HttpRequest request;
         HttpResponse<String> response;
         ObjectMapper mapper = new ObjectMapper();
 
+        String url;
+
+        if(movieType.equals(MovieType.PLAYING)){
+            url = "https://api.themoviedb.org/3/movie/now_playing?language=ko&region=KR&page=";
+        } else{
+            url = "https://api.themoviedb.org/3/movie/popular?language=en-US&page=";
+        }
+
         for (int i = 1; i <= 5; i++) {
             request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.themoviedb.org/3/movie/popular?language=en-US&page=" + i))
+                    .uri(URI.create(url + i))
                     .header("accept", "application/json")
                     .header("Authorization", "Bearer " + tmdbApiKey)
                     .method("GET", HttpRequest.BodyPublishers.noBody())
                     .build();
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
-            MovieList popularMovieList = mapper.readValue(response.body(), MovieList.class);
-            List<Movie> results = popularMovieList.getResults();
+            MovieList movieList = mapper.readValue(response.body(), MovieList.class);
+            List<Movie> results = movieList.getResults();
 
             for (Movie movie : results) {
-                movie.setPopular(true);
-                log.info("error check {}",movie.getVersion());
-                Optional<Movie> findMovie = movieRepository.findByMovieIdForUpdate(movie.getMovieId());
-                if(findMovie.isEmpty()){
-                    log.info("error check {}",movie.getVersion());
-                    Movie savedMovie = movieRepository.save(movie);
-                    mappingGenreWithMovie(savedMovie);
+                if(movieType.equals(MovieType.PLAYING)){
+                    movie.setPlaying(true);
+                } else{
+                    movie.setPopular(true);
+                }
+                Movie findMovie = movieMap.get(movie.getMovieId());
+                if(findMovie == null){
+                    movieMap.put(movie.getMovieId(), movie); //중복 처리
+                    newSavedMovie.add(movie);
                 }
                 else{
-                    Movie popularMovie = findMovie.get();
-                    popularMovie.setPopular(true);
+                    if(movieType.equals(MovieType.PLAYING)){
+                        findMovie.setPlaying(true);
+                    } else{
+                        findMovie.setPopular(true);
+                    }
                 }
             }
-            if(popularMovieList.getTotalPages() == i){
+            if(movieList.getTotalPages() == i){
                 break;
             }
         }
     }
 
     @Transactional
-    public void getPlayingMovie() throws IOException, InterruptedException {
-        HttpRequest request;
-        HttpResponse<String> response;
-        ObjectMapper mapper = new ObjectMapper();
+    public void mappingGenreWithMovie(List<Movie> movieList){
+        Map<Integer, Genre> genreMap = genreRepository.findAll().stream()
+                .collect(Collectors.toMap(genre -> genre.getGenreId(), genre -> genre));
 
-        for (int i = 1; i <= 5; i++) {
-            request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.themoviedb.org/3/movie/now_playing?language=ko&page=" + i + "&region=KR"))
-                    .header("accept", "application/json")
-                    .header("Authorization", "Bearer " + tmdbApiKey)
-                    .method("GET", HttpRequest.BodyPublishers.noBody())
-                    .build();
-            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        Map<Long, List<Genre>> movieGenresMap = movieGenresRepository.findAll().stream() // 중복체크용
+                .collect(Collectors.groupingBy(
+                        movieGenre -> movieGenre.getMovie().getId(), // key: movie_id
+                        Collectors.mapping(
+                                movieGenre -> movieGenre.getGenre(), // value: Genre 객체
+                                Collectors.toList()                  // value를 리스트로 수집
+                        )
+                ));
 
-            MovieList playingMovieList = mapper.readValue(response.body(), MovieList.class);
-            List<Movie> results = playingMovieList.getResults();
+        List<MovieGenres> movieGenresList = new ArrayList<>();
 
-            for (Movie movie : results) {
-                movie.setPlaying(true);
-                Optional<Movie> findMovie = movieRepository.findByMovieIdForUpdate(movie.getMovieId());
-                if(findMovie.isEmpty()){
-                    Movie savedMovie = movieRepository.save(movie);
-                    mappingGenreWithMovie(savedMovie);
+        for (Movie movie : movieList) {
+
+            List<Integer> genreIds = movie.getGenreIds(); // 새로운 영화와 매핑되어있는 genreIds
+            List<Genre> genres = movieGenresMap.get(movie.getId()); // 현재 DB에서 영화와 매핑되어 있는 genres
+
+            for (Integer genreId : genreIds) {
+                Genre savedGenre = genreMap.get(genreId);
+                boolean duplicateCheck = false;
+
+                if(genres != null){
+                    for (Genre genre : genres) { // 새로운 영화와 장르 정보가 이미 DB에 저장되어 있는지 확인
+                        if(genre.getGenreId() == savedGenre.getGenreId()){
+                            duplicateCheck = true;
+                            break;
+                        }
+                    }
                 }
-                else{
-                    Movie playingMovie = findMovie.get();
-                    playingMovie.setPlaying(true);
-                }
-            }
+                if(!duplicateCheck){
+                    MovieGenres movieGenres = new MovieGenres();
+                    movieGenres.setMovieGenres(movie,savedGenre);
 
-            if(playingMovieList.getTotalPages() == i){
-                break;
+                    movieGenresList.add(movieGenres);
+                }
             }
         }
-    }
-
-    @Transactional
-    public void mappingGenreWithMovie(Movie movie){
-        List<Integer> genreIds = movie.getGenreIds();
-        for (Integer genreId : genreIds) {
-            Optional<Genre> findGenre = genreRepository.findByGenreId(genreId);
-            if(findGenre.isEmpty()){
-                throw new RuntimeException("해당 장르를 찾을 수 없습니다");
-            }
-            Genre genre = findGenre.get();
-
-            if(movieGenresRepository.findByMovieAndGenre(movie,genre).isEmpty()){ //중복 방지
-                MovieGenres movieGenres = new MovieGenres();
-                movieGenres.setMovieGenres(movie,genre);
-                movieGenresRepository.save(movieGenres);
-            }
+        if(!movieGenresList.isEmpty()){
+            movieGenresRepository.saveAll(movieGenresList);
         }
     }
 }

@@ -27,6 +27,7 @@ public class Genre extends BaseEntity {
     private List<MovieGenres> movieGenres = new ArrayList<>();
 
     @JsonProperty("id")
+    @Column(unique = true)
     private int genreId;
 
     @JsonProperty("name")

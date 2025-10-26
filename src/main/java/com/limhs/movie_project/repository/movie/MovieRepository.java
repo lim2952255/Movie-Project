@@ -45,7 +45,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             })
     Page<Movie> findByIsPopularAndIsPlaying(boolean isPopular,boolean isPlaying, Pageable pageable);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     @Query("UPDATE Movie m set m.isPopular = false, m.isPlaying = false")
     void resetAllFlags();
@@ -54,4 +54,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
                 @QueryHint(name = "org.hibernate.cacheable", value = "true")})
     @Query("select m from Movie m join fetch m.movieGenres where m.movieId = :movieId")
     Optional<Movie> findByIdWithMovieGenres(@Param("movieId") int movieId);
+
+    List<Movie> findByMovieIdIn(List<Integer> movieIdList);
+
+    // 스케줄러에서 수정하는 용도의 메서드
+    List<Movie> findByIsPlayingTrueOrIsPopularTrue();
 }

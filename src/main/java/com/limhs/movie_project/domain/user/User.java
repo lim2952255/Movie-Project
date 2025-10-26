@@ -61,6 +61,7 @@ public class User extends BaseEntity {
     private String email;
 
     @Pattern(regexp = "^[a-zA-Z0-9]{8,20}",message = "아이디에는 숫자,영문자만 사용 가능하며 최소 길이는 8, 최대 길이는 20이어야 합니다.")
+    @Column(unique = true)
     private String userId;
 
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{10,}$", message = "비밀번호에는 영어,숫자,특수문자가 모두 포함되어야 하며 최소 길이는 10이상이어야 합니다.")

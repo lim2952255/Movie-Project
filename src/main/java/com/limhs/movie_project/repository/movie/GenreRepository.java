@@ -13,4 +13,6 @@ public interface GenreRepository extends JpaRepository<Genre,Long> {
     Optional<Genre> findByGenreId(int genreId);
 
     List<Genre> findByMovieGenresIdIn(List<Long> movieGenresIds);
+
+    List<Genre> findByGenreIdIn(List<Integer> genreIds);
 }
