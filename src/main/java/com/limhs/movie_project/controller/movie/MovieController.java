@@ -48,10 +48,14 @@ public class MovieController {
     }
 
     @GetMapping("/popularList/{pageNumber}")
-    public String popularList(@PathVariable String pageNumber, @RequestParam(name = "sort", defaultValue = "popularity") String sort, Model model){
+    public String popularList(@PathVariable String pageNumber,
+                              @RequestParam(name = "sort", defaultValue = "popularity") String sort,
+                              @RequestParam(name = "movieName", required = false) String movieName,
+                              Model model){
+
         int number = Integer.parseInt(pageNumber) - 1;
 
-        Page<MovieCardDTO> popularMovie = movieService.findPopular(number, sort);
+        Page<MovieCardDTO> popularMovie = movieService.findPopular(number, sort, movieName);
 
         List<MovieCardDTO> movies = popularMovie.getContent();
 
@@ -64,12 +68,14 @@ public class MovieController {
     }
 
     @GetMapping("/playingList/{pageNumber}")
-    public String playingList(@PathVariable String pageNumber, @RequestParam(name = "sort", defaultValue = "popularity") String sort, Model model) {
+    public String playingList(@PathVariable String pageNumber, @RequestParam(name = "sort", defaultValue = "popularity") String sort,
+                              @RequestParam(name = "movieName", required = false) String movieName,
+                              Model model) {
         int number = Integer.parseInt(pageNumber) - 1   ;
-        Page<MovieCardDTO> playingMovie = movieService.findPlaying(number, sort);
+        Page<MovieCardDTO> playingMovie = movieService.findPlaying(number, sort, movieName);
 
         List<MovieCardDTO> movies = playingMovie.getContent();
-
+        
         model.addAttribute("movies", movies);
         model.addAttribute("totalElements", movieService.getTotalElements(playingMovie));
         model.addAttribute("currentElements",movieService.getCurrentElements(playingMovie));
@@ -79,12 +85,14 @@ public class MovieController {
     }
 
     @GetMapping("/otherList/{pageNumber}")
-    public String otherList(@PathVariable String pageNumber, @RequestParam(name = "sort", defaultValue = "popularity") String sort, Model model) {
+    public String otherList(@PathVariable String pageNumber, @RequestParam(name = "sort", defaultValue = "popularity") String sort,
+                            @RequestParam(name = "movieName", required = false) String movieName,
+                            Model model) {
         int number = Integer.parseInt(pageNumber) - 1   ;
-        Page<MovieCardDTO> otherMovie = movieService.findOther(number, sort);
+        Page<MovieCardDTO> otherMovie = movieService.findOther(number, sort, movieName);
 
         List<MovieCardDTO> movies = otherMovie.getContent();
-
+        
         model.addAttribute("movies", movies);
         model.addAttribute("totalElements", movieService.getTotalElements(otherMovie));
         model.addAttribute("currentElements",movieService.getCurrentElements(otherMovie));

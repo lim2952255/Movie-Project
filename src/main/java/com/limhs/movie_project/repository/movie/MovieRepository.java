@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MovieRepository extends JpaRepository<Movie, Long> {
+public interface MovieRepository extends JpaRepository<Movie, Long>, CustomMovieRepository {
     @QueryHints({
             @QueryHint(name = "org.hibernate.readOnly",value = "true"),
             @QueryHint(name = "org.hibernate.cacheable", value = "true")
@@ -26,24 +26,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     @Query("select m from Movie m where m.movieId = :movieId")
     Optional<Movie> findByMovieIdForUpdate(@Param("movieId") int movieId);
-
-    @QueryHints({
-            @QueryHint(name = "org.hibernate.readOnly",value = "true"),
-            @QueryHint(name = "org.hibernate.cacheable", value = "true")
-            })
-    Page<Movie> findByIsPopular(boolean isPopular, Pageable pageable);
-
-    @QueryHints({
-            @QueryHint(name = "org.hibernate.readOnly",value = "true"),
-            @QueryHint(name = "org.hibernate.cacheable", value = "true")
-            })
-    Page<Movie> findByIsPlaying(boolean isPlaying, Pageable pageable);
-
-    @QueryHints({
-            @QueryHint(name = "org.hibernate.readOnly",value = "true"),
-            @QueryHint(name = "org.hibernate.cacheable", value = "true")
-            })
-    Page<Movie> findByIsPopularAndIsPlaying(boolean isPopular,boolean isPlaying, Pageable pageable);
 
     @Modifying(clearAutomatically = true)
     @Transactional

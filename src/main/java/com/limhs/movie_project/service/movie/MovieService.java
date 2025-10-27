@@ -46,55 +46,35 @@ public class MovieService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MovieCardDTO> findPopular(int pageNumber, String sortParam){
-        Sort sort = findMovieSort(sortParam);
+    public Page<MovieCardDTO> findPopular(int pageNumber, String sortParam, String movieName){
+        pageable = PageRequest.of(pageNumber, 20);
 
-        if(sort == null){
-            //Pageable
-            pageable = PageRequest.of(pageNumber, 20);
-        } else{
-            pageable = PageRequest.of(pageNumber, 20 ,sort);
-        }
-
-        Page<Movie> popularMovies = movieRepository.findByIsPopular(true, pageable);
+        Page<Movie> popularMovies = movieRepository.findMoviePages(pageable, sortParam, movieName
+                                                    ,true, false);
 
         Page<MovieCardDTO> movieCards = popularMovies.map(movie -> new MovieCardDTO(movie));
         return movieCards;
     }
 
     @Transactional(readOnly = true)
-    public Page<MovieCardDTO> findPlaying(int pageNumber, String sortParam){
-        Sort sort = findMovieSort(sortParam);
+    public Page<MovieCardDTO> findPlaying(int pageNumber, String sortParam, String movieName){
+        pageable = PageRequest.of(pageNumber, 20);
 
-        if(sort == null){
-            //Pageable
-            pageable = PageRequest.of(pageNumber, 20);
-        } else{
-            pageable = PageRequest.of(pageNumber, 20 ,sort);
-        }
-
-        Page<Movie> playingMovies = movieRepository.findByIsPlaying(true, pageable);
+        Page<Movie> playingMovies = movieRepository.findMoviePages(pageable, sortParam, movieName
+                ,false, true);
 
         Page<MovieCardDTO> movieCards = playingMovies.map(movie -> new MovieCardDTO(movie));
-
         return movieCards;
     }
 
     @Transactional(readOnly = true)
-    public Page<MovieCardDTO> findOther(int pageNumber, String sortParam){
-        Sort sort = findMovieSort(sortParam);
+    public Page<MovieCardDTO> findOther(int pageNumber, String sortParam, String movieName){
+        pageable = PageRequest.of(pageNumber, 20);
 
-        if(sort == null){
-            //Pageable
-            pageable = PageRequest.of(pageNumber, 20);
-        } else{
-            pageable = PageRequest.of(pageNumber, 20 ,sort);
-        }
-
-        Page<Movie> otherMovies = movieRepository.findByIsPopularAndIsPlaying(false, false, pageable);
+        Page<Movie> otherMovies = movieRepository.findMoviePages(pageable, sortParam, movieName
+                ,false, false);
 
         Page<MovieCardDTO> movieCards = otherMovies.map(movie -> new MovieCardDTO(movie));
-
         return movieCards;
     }
 
@@ -117,15 +97,4 @@ public class MovieService {
         return movieCardList.getNumber() * movieCardList.getSize() + movieCardList.getNumberOfElements();
     }
 
-    @Transactional(readOnly = true)
-    public Sort findMovieSort(String sort){
-        switch (sort) {
-            case "popularity":
-                return Sort.by(Sort.Direction.DESC, "popularity");
-            case "releaseDate":
-                return Sort.by(Sort.Direction.DESC, "releaseDate");
-            default:
-                return null;
-        }
-    }
 }

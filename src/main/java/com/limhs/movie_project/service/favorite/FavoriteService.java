@@ -71,14 +71,8 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MovieCardDTO> getFavoriteMovie(HttpSession session, int pageNumber, String sortParam){
-        Pageable pageable;
-        Sort sort = movieService.findMovieSort(sortParam);
-        if(sort == null){
-            pageable = PageRequest.of(pageNumber, 20);
-        } else{
-            pageable = PageRequest.of(pageNumber, 20, sort);
-        }
+    public Page<MovieCardDTO> getFavoriteMovie(HttpSession session, int pageNumber){
+        Pageable pageable = PageRequest.of(pageNumber, 20);
 
         User user = userService.getUserForRead(session);
 

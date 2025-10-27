@@ -67,15 +67,31 @@
 <h1>인기 영화 목록</h1>
 <a href="/home">홈으로 이동</a>
 
+<!-- 정렬 선택 UI -->
+<form method="get" action="">
+    <label>
+        <input type="text" name="movieName" placeholder="영화 제목 검색" th:value="${param.movieName ?: ''}"> 제목
+    </label>
+    <label>
+        <input type="radio" name="sort" value="popularity"
+               th:checked="${sort == 'popularity'}"> 인기순
+    </label>
+    <label>
+        <input type="radio" name="sort" value="releaseDate"
+               th:checked="${param.sort == 'releaseDate'}">개봉일 순
+    </label>
+    <button type="submit">검색</button>
+</form>
+
 <div th:replace="~{/layout/movieList :: movieList}"></div>
 
 <div class="pagination-container">
-    <a th:href="@{/movie/popularList/{pageNumber}(pageNumber=${currentPage - 1}, sort=${param.sort})}"
+    <a th:href="@{/movie/popularList/{pageNumber}(pageNumber=${currentPage - 1}, sort=${param.sort}, movieName=${param.movieName})}"
        th:if="${currentPage > 1}">이전</a>
 
     <span th:text="${currentPage}">1</span>
 
-    <a th:href="@{/movie/popularList/{pageNumber}(pageNumber=${currentPage + 1}, sort=${param.sort})}"
+    <a th:href="@{/movie/popularList/{pageNumber}(pageNumber=${currentPage + 1}, sort=${param.sort}, movieName=${param.movieName})}"
        th:if="${currentPage < totalPages}">다음</a>
 </div>
 

@@ -40,11 +40,10 @@ public class UserController {
     }
 
     @GetMapping("mypage/favorites/{pageNumber}")
-    public String favorites(@PathVariable String pageNumber, HttpSession session,
-                            @RequestParam(name = "sort", defaultValue = "popularity") String sort, Model model){
+    public String favorites(@PathVariable String pageNumber, HttpSession session, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<MovieCardDTO> favoriteMovie = favoriteService.getFavoriteMovie(session, number,sort);
+        Page<MovieCardDTO> favoriteMovie = favoriteService.getFavoriteMovie(session, number);
         List<MovieCardDTO> movies = favoriteMovie.getContent();
 
         model.addAttribute("movies", movies);
