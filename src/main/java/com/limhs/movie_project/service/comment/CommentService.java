@@ -37,9 +37,9 @@ public class CommentService {
     private Pageable pageable;
 
     @Transactional
-    public void saveComment(Comment comment, Long postId, HttpSession session){
+    public void saveComment(Comment comment, Long postId){
         Post post = postService.findPostForUpdate(postId);
-        User user = userService.getUserForUpdate(session);
+        User user = userService.getUserForUpdate();
 
         comment.setComment(user,post);
         commentRepository.save(comment);

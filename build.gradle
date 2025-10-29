@@ -37,7 +37,9 @@ dependencies {
 	implementation 'org.ehcache:ehcache:3.10.9'
 
 	// QueryDSL (Spring Boot 3 → Jakarta)
+	//querydsl-jpa → JPA용 QueryDSL 핵심 라이브러리
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	// Annotation Processing Tool, 컴파일 시점에 Q 클래스(QMovie, QPost 등)를 생성
 	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
 
 	// Jakarta dependencies
@@ -58,18 +60,18 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
+//Q 클래스 생성 위치 설정
 def querydslDir = file("src/main/generated")
 tasks.withType(JavaCompile) {
-	options.annotationProcessorGeneratedSourcesDirectory = querydslDir
+	options.annotationProcessorGeneratedSourcesDirectory = querydslDir //Q 클래스가 생성될 폴더 지정
 }
-sourceSets.main.java.srcDir querydslDir
+sourceSets.main.java.srcDir querydslDir //Gradle에게 "생성된 Q 클래스도 컴파일 대상"이라고 알려줌
 
 bootRun {
-	dependsOn compileJava
+	dependsOn compileJava //Spring Boot 애플리케이션 실행 전에 Q 클래스가 생성되고 컴파일되도록 보장
 }
 
 // clean task 수정
 clean {
-	delete querydslDir
+	delete querydslDir ///gradlew clean 시 Q 클래스도 삭제되도록 설정
 }

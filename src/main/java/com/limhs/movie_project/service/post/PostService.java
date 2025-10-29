@@ -37,11 +37,11 @@ public class PostService {
     private Pageable pageable;
 
     @Transactional
-    public Post savePost(Post post, String id, HttpSession session){
+    public Post savePost(Post post, String id){
         int movieId = Integer.parseInt(id);
 
         Movie movie = movieService.findByMovieIdForUpdate(movieId);
-        User user = userService.getUserForUpdate(session);
+        User user = userService.getUserForUpdate();
 
         post.setPost(movie,user);
 
@@ -109,7 +109,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Post> getWritePosts(HttpSession session, int pageNumber, String sortParam) {
+    public Page<Post> getWritePosts(int pageNumber, String sortParam) {
 
         Sort sort = getPostSort(sortParam);
         if(sort == null){
@@ -118,7 +118,7 @@ public class PostService {
             pageable = PageRequest.of(pageNumber, 10, sort);
         }
 
-        User user = userService.getUserForRead(session);
+        User user = userService.getUserForRead();
 
         Page<Post> posts = postRepository.findByUser_UserId(user.getUserId(), pageable);
 
@@ -128,11 +128,11 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Post> getLikesPosts(HttpSession session, int pageNumber) {
+    public Page<Post> getLikesPosts(int pageNumber) {
         //Pageable
         pageable = PageRequest.of(pageNumber, 10);
 
-        User user = userService.getUserForRead(session);
+        User user = userService.getUserForRead();
 
         Page<Post> posts = postRepository.findByLikes_User(user, pageable);
 

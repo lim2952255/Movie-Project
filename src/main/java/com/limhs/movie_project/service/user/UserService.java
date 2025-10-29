@@ -1,5 +1,6 @@
 package com.limhs.movie_project.service.user;
 
+import com.limhs.movie_project.config.springSecurity.CustomUserDetails;
 import com.limhs.movie_project.domain.LoginDTO;
 import com.limhs.movie_project.domain.user.User;
 import com.limhs.movie_project.exception.DuplicatedUserId;
@@ -7,6 +8,7 @@ import com.limhs.movie_project.exception.LoginFailException;
 import com.limhs.movie_project.repository.user.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,25 +56,19 @@ public class UserService {
     
     // 읽기 전용 조회 메서드
     @Transactional(readOnly = true)
-    public User getUserForRead(HttpSession session){
-        Object findUser = session.getAttribute("user");
-        if(findUser != null){
-            User getUser = (User) findUser;
-            User user = userRepository.findByUserIdForRead(getUser.getUserId()).get();
-            return user;
-        }
-        throw new RuntimeException();
+    public User getUserForRead(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User getUser = ((CustomUserDetails) principal).getUser();
+        User user = userRepository.findByUserIdForRead(getUser.getUserId()).get();
+        return user;
     }
     
     //수정 전용 조회 메서드
     @Transactional
-    public User getUserForUpdate(HttpSession session){
-        Object findUser = session.getAttribute("user");
-        if(findUser != null){
-            User getUser = (User) findUser;
-            User user = userRepository.findByUserIdForUpdate(getUser.getUserId()).get();
-            return user;
-        }
-        throw new RuntimeException();
+    public User getUserForUpdate(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User getUser = ((CustomUserDetails) principal).getUser();
+        User user = userRepository.findByUserIdForRead(getUser.getUserId()).get();
+        return user;
     }
 }

@@ -10,27 +10,23 @@
     <p th:text="${message}" >로그인 접근제어</p>
 </div>
 <h1>로그인</h1>
-<form action="login.html" th:action="@{/login/login}"  th:object="${loginDTO}" method="post">
+<form action="login.html" th:action="@{/login}"  th:object="${loginDTO}" method="post">
     <div th:if="${redirectURL != null}">
         <input type="hidden" name="redirectURL" th:value="${redirectURL}">
     </div>
 
-    <div th:if="${#fields.hasGlobalErrors()}">
-        <p class="global-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메세지</p>
+    <div th:if="${validationError != null}">
+        <p th:text = "${validationError}"> 검증 오류</p>
     </div>
     <div>
         <label for="userId">사용자 Id</label>
         <input type="text" id="userId" th:field="*{userId}"
-               th:errorclass="field-error"
                placeholder="Id를 입력하세요">
-        <div class="field-error" th:errors="*{userId}">사용자 Id 오류</div>
     </div>
     <div>
         <label for="password">사용자 비밀번호</label>
         <input type="password" id="password" th:field="*{password}"
-               th:errorclass="field-error"
                placeholder="비밀번호를 입력하세요">
-        <div class="field-error" th:errors="*{password}">사용자 비밀번호 오류</div>
     </div>
 
     <div class="row">

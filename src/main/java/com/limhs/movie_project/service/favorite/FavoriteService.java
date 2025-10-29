@@ -31,14 +31,14 @@ public class FavoriteService {
     private final MovieService movieService;
 
     @Transactional
-    public void setFavorites(int movieId,HttpSession session){
+    public void setFavorites(int movieId){
         Optional<Movie> findMovie = movieRepository.findByMovieIdForUpdate(movieId);
         if(findMovie.isEmpty()){
             throw new RuntimeException("해당 영화가 존재하지 않습니다.");
         }
         Movie movie = findMovie.get();
 
-        User user = userService.getUserForUpdate(session);
+        User user = userService.getUserForUpdate();
 
         Favorite existFavorite = findFavoriteForRead(user,movie);
         if(existFavorite != null){
@@ -51,9 +51,9 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void unsetFavorites(int movieId, HttpSession session){
+    public void unsetFavorites(int movieId){
         Movie movie = movieService.findByMovieIdForUpdate(movieId);
-        User user = userService.getUserForUpdate(session);
+        User user = userService.getUserForUpdate();
 
         Favorite favorite = findFavoriteForUpdate(user, movie);
         favorite.unsetFavorite();
@@ -71,10 +71,10 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MovieCardDTO> getFavoriteMovie(HttpSession session, int pageNumber){
+    public Page<MovieCardDTO> getFavoriteMovie(int pageNumber){
         Pageable pageable = PageRequest.of(pageNumber, 20);
 
-        User user = userService.getUserForRead(session);
+        User user = userService.getUserForRead();
 
         Page<Favorite> findFavorites = favoriteRepository.findByUserId(user.getId(), pageable);
         Page<MovieCardDTO> movieCards = findFavorites.map(favorite -> new MovieCardDTO(favorite.getMovie()));
@@ -82,8 +82,8 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isFavorite(HttpSession session, Movie movie){
-        User user = userService.getUserForRead(session);
+    public boolean isFavorite(Movie movie){
+        User user = userService.getUserForRead();
         List<Favorite> favorites = user.getFavorites();
 
         boolean isFavorites = false;

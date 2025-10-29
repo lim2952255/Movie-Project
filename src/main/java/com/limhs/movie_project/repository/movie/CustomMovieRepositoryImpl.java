@@ -63,6 +63,7 @@ public class CustomMovieRepositoryImpl implements CustomMovieRepository{
                 .where(builder)
                 .setHint("org.hibernate.cacheable", true)
                 .fetchOne();
+
         return new PageImpl<>(movieList,pageable,total);
     }
 

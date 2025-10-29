@@ -41,7 +41,7 @@ public class MovieSchedule {
     }
 
     //매일 09시에 반복적으로 로직 수행
-    @Scheduled(cron = "0 1 19 * * *")
+    @Scheduled(cron = "0 4 19 * * *")
     @Transactional
     public void movieListUpdate() throws IOException, InterruptedException {
         log.info("Genre Update start");
@@ -50,12 +50,18 @@ public class MovieSchedule {
 
         log.info("Update start");
 
-        List<Integer> movieList = movieRepository.findByIsPlayingTrueOrIsPopularTrue()
-                .stream().map(movie -> movie.getMovieId()).toList();
-        
+        /**
+         *  OtherMovie에 속해있다가 Popular/Playing으로 변경되는 경우 중복되는 문제 발생
+         */
+//        List<Integer> movieList = movieRepository.findByIsPlayingTrueOrIsPopularTrue()
+//                .stream().map(movie -> movie.getMovieId()).toList();
+
         movieRepository.resetAllFlags(); // 벌크연산 수행시 영속성 컨텍스트 플러시
 
-        Map<Integer, Movie> movieMap = movieRepository.findByMovieIdIn(movieList).stream()
+//        Map<Integer, Movie> movieMap = movieRepository.findByMovieIdIn(movieList).stream()
+//                .collect(Collectors.toMap(movie -> movie.getMovieId(), movie -> movie)); // 다시 영속화
+
+        Map<Integer, Movie> movieMap = movieRepository.findAll().stream()
                 .collect(Collectors.toMap(movie -> movie.getMovieId(), movie -> movie)); // 다시 영속화
 
         List<Movie> newSavedMovie = new ArrayList<>();
@@ -100,7 +106,8 @@ public class MovieSchedule {
     }
 
     @Transactional
-    public void getMoviesFromTMDBAPI(MovieType movieType, Map<Integer, Movie> movieMap, List<Movie> newSavedMovie) throws IOException, InterruptedException {
+    public void getMoviesFromTMDBAPI(MovieType movieType, Map<Integer, Movie> movieMap,
+                                     List<Movie> newSavedMovie) throws IOException, InterruptedException {
         HttpRequest request;
         HttpResponse<String> response;
         ObjectMapper mapper = new ObjectMapper();

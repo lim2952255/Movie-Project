@@ -1,7 +1,6 @@
 package com.limhs.movie_project.config;
 
 import com.limhs.movie_project.interceptor.LogInterceptor;
-import com.limhs.movie_project.interceptor.LoginInterceptor;
 import com.limhs.movie_project.interceptor.UserInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +13,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor())
-                .order(1)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/css/**","/*.ico", "/login/**","/signup/**","/error","/","/home/**");
-
         registry.addInterceptor(new UserInterceptor())
                 .order(1)
                 .addPathPatterns("/**")

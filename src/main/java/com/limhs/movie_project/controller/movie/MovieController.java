@@ -102,7 +102,7 @@ public class MovieController {
     }
 
     @GetMapping("/{movieId}/{pageNumber}")
-    public String movieDetail(@PathVariable String movieId, @PathVariable String pageNumber,HttpSession session,
+    public String movieDetail(@PathVariable String movieId, @PathVariable String pageNumber,
                               @RequestParam(name = "sort", defaultValue = "createdTime") String sort, Model model){
         int movieNum = Integer.parseInt(movieId);
         Movie movie = movieService.findByMovieIdWithMoviegenres(movieNum);
@@ -111,7 +111,7 @@ public class MovieController {
 
         model.addAttribute("movie",movie);
 
-        boolean favorite = favoriteService.isFavorite(session, movie);
+        boolean favorite = favoriteService.isFavorite(movie);
         model.addAttribute("isFavorite",favorite);
 
         int number = Integer.parseInt(pageNumber) - 1   ;

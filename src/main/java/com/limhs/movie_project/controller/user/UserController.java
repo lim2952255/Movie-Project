@@ -40,10 +40,10 @@ public class UserController {
     }
 
     @GetMapping("mypage/favorites/{pageNumber}")
-    public String favorites(@PathVariable String pageNumber, HttpSession session, Model model){
+    public String favorites(@PathVariable String pageNumber, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<MovieCardDTO> favoriteMovie = favoriteService.getFavoriteMovie(session, number);
+        Page<MovieCardDTO> favoriteMovie = favoriteService.getFavoriteMovie( number);
         List<MovieCardDTO> movies = favoriteMovie.getContent();
 
         model.addAttribute("movies", movies);
@@ -56,29 +56,29 @@ public class UserController {
     }
 
     @PostMapping("user/{movieId}/favorite")
-    public String favorite(@PathVariable String movieId, HttpSession session){
+    public String favorite(@PathVariable String movieId){
         int movieNum = Integer.parseInt(movieId);
 
-        favoriteService.setFavorites(movieNum,session);
+        favoriteService.setFavorites(movieNum);
 
         return "redirect:/movie/"+movieId;
     }
 
     @PostMapping("user/{movieId}/unfavorite")
-    public String unfavorite(@PathVariable String movieId, HttpSession session){
+    public String unfavorite(@PathVariable String movieId){
         int movieNum = Integer.parseInt(movieId);
 
-        favoriteService.unsetFavorites(movieNum,session);
+        favoriteService.unsetFavorites(movieNum);
 
         return "redirect:/movie/"+movieId;
     }
 
     @GetMapping("mypage/posts/{pageNumber}")
-    public String posts(@PathVariable String pageNumber, HttpSession session,
+    public String posts(@PathVariable String pageNumber,
                         @RequestParam(name = "sort", defaultValue = "createdTime") String sort, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<Post> getPosts = postService.getWritePosts(session, number, sort);
+        Page<Post> getPosts = postService.getWritePosts(number, sort);
         List<Post> posts = getPosts.getContent();
 
         model.addAttribute("posts", posts);
@@ -91,10 +91,10 @@ public class UserController {
     }
 
     @GetMapping("mypage/likes/{pageNumber}")
-    public String likes(@PathVariable String pageNumber, HttpSession session, Model model){
+    public String likes(@PathVariable String pageNumber, Model model){
         int number = Integer.parseInt(pageNumber) - 1   ;
 
-        Page<Post> getPosts = postService.getLikesPosts(session, number);
+        Page<Post> getPosts = postService.getLikesPosts(number);
         List<Post> posts = getPosts.getContent();
 
         model.addAttribute("posts", posts);

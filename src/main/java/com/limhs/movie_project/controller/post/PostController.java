@@ -46,13 +46,13 @@ public class PostController {
     }
 
     @PostMapping("/create/{movieId}")
-    public String create(@Validated Post post, BindingResult bindingResult, @PathVariable String movieId, HttpSession session, Model model){
+    public String create(@Validated Post post, BindingResult bindingResult, @PathVariable String movieId, Model model){
         if(bindingResult.hasErrors()){
             log.info("errors={}",bindingResult);
             return "post/write";
         }
 
-        Post savedPost = postService.savePost(post, movieId, session);
+        Post savedPost = postService.savePost(post, movieId);
 
         model.addAttribute("post", savedPost);
 
@@ -94,12 +94,12 @@ public class PostController {
     }
 
     @GetMapping("/{postId}/{pageNumber}")
-    public String joinPost(@PathVariable String postId, @PathVariable String pageNumber , HttpSession session, Model model){
+    public String joinPost(@PathVariable String postId, @PathVariable String pageNumber , Model model){
         long id = Long.parseLong(postId);
         int number = Integer.parseInt(pageNumber) - 1;
 
         Post post = postService.viewPost(id);
-        User user = userService.getUserForRead(session);
+        User user = userService.getUserForRead();
 
         boolean like = likeService.userLikesPost(post, user);
 

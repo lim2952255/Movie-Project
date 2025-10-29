@@ -8,6 +8,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LoginDTO {
+    public LoginDTO() {
+    }
+
+    public LoginDTO(String userId, String password) {
+        this.userId = userId;
+        this.password = password;
+    }
 
     @NotBlank(message = "사용자 Id값은 필수입니다")
     private String userId;

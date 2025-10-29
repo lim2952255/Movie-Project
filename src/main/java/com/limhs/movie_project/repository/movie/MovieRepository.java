@@ -41,4 +41,5 @@ public interface MovieRepository extends JpaRepository<Movie, Long>, CustomMovie
 
     // 스케줄러에서 수정하는 용도의 메서드
     List<Movie> findByIsPlayingTrueOrIsPopularTrue();
+
 }

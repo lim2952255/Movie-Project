@@ -25,9 +25,9 @@ public class CommentLikeService {
     private final UserService userService;
 
     @Transactional
-    public void setCommentLike(Long commentId, HttpSession session){
+    public void setCommentLike(Long commentId){
         Comment comment = findCommentForUpdate(commentId);
-        User user = userService.getUserForUpdate(session);
+        User user = userService.getUserForUpdate();
 
         CommentLike commentLike = new CommentLike();
         commentLike.setCommentLike(user,comment);
@@ -36,9 +36,9 @@ public class CommentLikeService {
     }
 
     @Transactional
-    public void deleteCommentLike(Long commentId,HttpSession session) {
+    public void deleteCommentLike(Long commentId) {
         Comment comment = findCommentForUpdate(commentId);
-        User user = userService.getUserForUpdate(session);
+        User user = userService.getUserForUpdate();
 
         CommentLike commentLike = findCommentLike(comment, user);
         commentLike.deleteCommentLike();

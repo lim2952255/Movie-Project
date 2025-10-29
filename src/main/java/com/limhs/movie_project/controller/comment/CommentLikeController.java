@@ -15,19 +15,19 @@ public class CommentLikeController {
     private final CommentLikeService commentLikeService;
 
     @GetMapping("/commentLike/{postId}/{commentId}")
-    public String commentLike(@PathVariable String postId, @PathVariable String commentId, HttpSession session){
+    public String commentLike(@PathVariable String postId, @PathVariable String commentId){
         Long id = Long.parseLong(commentId);
 
-        commentLikeService.setCommentLike(id, session);
+        commentLikeService.setCommentLike(id);
 
         return "redirect:/post/"+ postId;
     }
 
     @GetMapping("/commentDislike/{postId}/{commentId}")
-    public String commentDislike(@PathVariable String postId, @PathVariable String commentId, HttpSession session){
+    public String commentDislike(@PathVariable String postId, @PathVariable String commentId){
         Long id = Long.parseLong(commentId);
 
-        commentLikeService.deleteCommentLike(id, session);
+        commentLikeService.deleteCommentLike(id);
 
         return "redirect:/post/"+ postId;
     }

@@ -13,19 +13,19 @@ public class LikeController {
     private final LikeService likeService;
 
     @GetMapping("/like/{postId}")
-    public String like(@PathVariable String postId, HttpSession session){
+    public String like(@PathVariable String postId){
         long id = Long.parseLong(postId);
 
-        likeService.saveLike(id, session);
+        likeService.saveLike(id);
 
         return "redirect:/post/"+postId;
     }
 
     @GetMapping("/dislike/{postId}")
-    public String dislike(@PathVariable String postId,HttpSession session){
+    public String dislike(@PathVariable String postId){
         long id = Long.parseLong(postId);
 
-        likeService.deleteLike(id, session);
+        likeService.deleteLike(id);
 
         return "redirect:/post/"+postId;
     }

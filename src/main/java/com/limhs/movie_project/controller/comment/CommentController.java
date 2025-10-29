@@ -31,14 +31,14 @@ public class CommentController {
     }
 
     @PostMapping("/{postId}")
-    public String commentSave(@Validated Comment comment, BindingResult bindingResult, @PathVariable String postId, HttpSession session){
+    public String commentSave(@Validated Comment comment, BindingResult bindingResult, @PathVariable String postId){
         if(bindingResult.hasErrors()){
             log.info("errors={}",bindingResult);
             return "comment/comment";
         }
         Long id = Long.parseLong(postId);
 
-        commentService.saveComment(comment,id,session);
+        commentService.saveComment(comment,id);
 
         return "redirect:/post/"+postId;
     }

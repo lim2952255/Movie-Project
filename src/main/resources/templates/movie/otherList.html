@@ -91,7 +91,7 @@
 
     <span th:text="${currentPage}">1</span>
 
-    <a th:href="@{/movie/otherList/{pageNumber}(pageNumber=${currentPage + 1}, sort=${param.sort}, , movieName=${param.movieName})}"
+    <a th:href="@{/movie/otherList/{pageNumber}(pageNumber=${currentPage + 1}, sort=${param.sort}, movieName=${param.movieName})}"
        th:if="${currentPage < totalPages}">다음</a>
 
 </div>
