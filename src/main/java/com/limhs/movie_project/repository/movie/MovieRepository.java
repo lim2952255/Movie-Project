@@ -34,7 +34,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long>, CustomMovie
 
     @QueryHints({@QueryHint(name = "org.hibernate.readOnly",value= "true"),
                 @QueryHint(name = "org.hibernate.cacheable", value = "true")})
-    @Query("select m from Movie m join fetch m.movieGenres where m.movieId = :movieId")
+    // 장르가 없는 영화도 있기 때문에 left join fetch 수행
+    @Query("select m from Movie m left join fetch m.movieGenres where m.movieId = :movieId")
     Optional<Movie> findByIdWithMovieGenres(@Param("movieId") int movieId);
 
     List<Movie> findByMovieIdIn(List<Integer> movieIdList);

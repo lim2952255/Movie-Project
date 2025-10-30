@@ -12,11 +12,15 @@ public class MovieUrlConverter implements AttributeConverter<String,String> {
 
     @Override
     public String convertToDatabaseColumn(String attribute) {
+        if(attribute == null || attribute.isEmpty()) return null; // null 처리
         return attribute.replace(tmdbImageBaseUrl, "");
     }
 
     @Override
     public String convertToEntityAttribute(String dbData) {
+        if(dbData == null || dbData.isEmpty()) {
+            return null;
+        }
         return tmdbImageBaseUrl + dbData;
     }
 }

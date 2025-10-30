@@ -13,7 +13,12 @@
         <div th:each="movie : ${movies}">
             <a th:href="@{/movie/{movieId}(movieId=${movie.movieId})}">
                 <div class = "movie-card">
-                    <img th:src="${movie.posterPath}" alt="포스터 이미지" />
+                    <div th:if="${movie.posterPath != null and movie.posterPath != ''}">
+                        <img th:src="${movie.posterPath}" alt="포스터 이미지" />
+                    </div>
+                    <div th:unless="${movie.posterPath != null and movie.posterPath != ''}">
+                        <p>이미지 없음</p>
+                    </div>
                     <h2 th:text="${movie.title}">영화 제목</h2>
                     <div th:if="${movie.adult}"><h3 th:text="성인영화">성인영화</h3></div>
                     <div style="display: flex; justify-content: center; gap: 10px;">

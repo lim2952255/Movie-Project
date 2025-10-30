@@ -10,7 +10,9 @@
     <header>
         <div th:if="${user != null}">
             <p th:text="|${user.userId}님 환영합니다!|"></p>
-            <a href="/logout">로그아웃</a>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">로그아웃</button>
+            </form>
             <a href="/mypage">마이페이지</a>
         </div>
         <div th:if="${user == null}">
